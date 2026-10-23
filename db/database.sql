@@ -1,0 +1,8 @@
+CREATE TABLE songs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    artist TEXT NOT NULL,
+    audio_url TEXT NOT NULL,
+    instrumental_url TEXT,
+    lrc_url TEXT
+);
