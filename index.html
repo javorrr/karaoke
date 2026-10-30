@@ -6,6 +6,7 @@
   <meta name="description" content="Aplikacja karaoke z wyszukiwaniem piosenek i odtwarzaczem">
   <title>Karaoke | Śpiewaj po swojemu</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/filters.css">
 </head>
 <body>
   <header class="site-header">
@@ -31,6 +32,25 @@
         <span class="sr-only">Szukaj piosenki lub wykonawcy</span>
         <input id="song-search" type="search" placeholder="Szukaj piosenki lub wykonawcy..." autocomplete="off" aria-label="Szukaj piosenki lub wykonawcy">
       </label>
+
+      <section class="filters-panel" aria-labelledby="filters-title">
+        <h2 id="filters-title" class="filters-title">Dopasuj repertuar</h2>
+        <div class="filters-grid">
+          <label class="filter-field" for="genre-filter">
+            <span>Gatunek</span>
+            <select id="genre-filter" aria-label="Filtruj według gatunku"></select>
+          </label>
+          <label class="filter-field" for="language-filter">
+            <span>Język</span>
+            <select id="language-filter" aria-label="Filtruj według języka"></select>
+          </label>
+          <label class="filter-field" for="decade-filter">
+            <span>Dekada</span>
+            <select id="decade-filter" aria-label="Filtruj według dekady"></select>
+          </label>
+          <button id="reset-filters" class="reset-filters" type="button" disabled>Wyczyść filtry</button>
+        </div>
+      </section>
 
       <div class="list-heading">
         <h2>Wszystkie piosenki</h2>

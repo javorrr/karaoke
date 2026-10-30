@@ -1,6 +1,7 @@
 import { fetchSongs } from './api.js';
 import { setupSearch } from './search.js';
 import { createPlayer } from './player.js';
+import { createSongFilters } from './filters.js';
 
 const libraryView = document.querySelector('#library-view');
 const playerView = document.querySelector('#player-view');
@@ -8,6 +9,7 @@ const songsList = document.querySelector('#songs-list');
 const listStatus = document.querySelector('#list-status');
 const songCount = document.querySelector('#song-count');
 const searchInput = document.querySelector('#song-search');
+let loadedSongs = [];
 
 const player = createPlayer({
   playerTitle: document.querySelector('#player-title'),
@@ -68,12 +70,25 @@ function renderSongs(songs) {
   });
 }
 
+const songFilters = createSongFilters({
+  elements: {
+    genre: document.querySelector('#genre-filter'),
+    language: document.querySelector('#language-filter'),
+    decade: document.querySelector('#decade-filter'),
+    reset: document.querySelector('#reset-filters')
+  },
+  onChange: renderSongs
+});
+
 async function loadSongs(query = '') {
   listStatus.textContent = 'Ładowanie piosenek...';
   try {
-    const songs = await fetchSongs(query);
-    renderSongs(songs);
+    loadedSongs = await fetchSongs(query);
+    songFilters.setSongs(loadedSongs);
+    renderSongs(songFilters.getFilteredSongs());
   } catch (error) {
+    loadedSongs = [];
+    songFilters.setSongs(loadedSongs);
     songCount.textContent = '';
     songsList.replaceChildren();
     listStatus.textContent = error.message;
