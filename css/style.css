@@ -81,3 +81,109 @@ h2 { margin-bottom: 0; font-size: 1.45rem; }
   .player-controls { align-items: stretch; flex-direction: column; }
   .play-button { align-self: flex-start; }
 }
+
+/* KAR-2: Zsynchronizowany tekst */
+
+.lyrics-container {
+  margin: 25px 0;
+  padding: 20px;
+  background: var(--surface-light);
+  border-radius: 10px;
+}
+
+#lyrics-display {
+  max-height: 250px;
+  overflow-y: auto;
+  text-align: center;
+  scroll-behavior: smooth;
+}
+
+.lyrics-line {
+  padding: 10px;
+  color: var(--muted);
+  opacity: 0.6;
+  transition: color 0.2s, opacity 0.2s;
+}
+
+.lyrics-line.active {
+  color: var(--accent-bright);
+  opacity: 1;
+  font-weight: bold;
+  font-size: 1.15rem;
+}
+
+
+/* KAR-14: TABLETY */
+
+@media (min-width: 601px) and (max-width: 1024px) {
+
+  .container {
+    width: calc(100% - 40px);
+  }
+
+  .library-view {
+    padding: 55px 0;
+  }
+
+  .player-panel {
+    grid-template-columns: 140px minmax(0, 1fr);
+    gap: 24px;
+    padding: 24px;
+  }
+
+  .player-controls {
+    flex-wrap: wrap;
+  }
+
+  .timeline {
+    min-width: 0;
+    flex: 1 1 220px;
+  }
+
+  .song-row {
+    gap: 15px;
+  }
+}
+
+
+/* KAR-14: DODATKOWE POPRAWKI DLA TELEFONÓW */
+
+@media (max-width: 600px) {
+
+  .search-box {
+    width: 100%;
+  }
+
+  .song-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .song-title {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .sing-button {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .player-details {
+    min-width: 0;
+  }
+
+  .player-details h1 {
+    overflow-wrap: anywhere;
+  }
+
+  .play-button {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .timeline {
+    width: 100%;
+    min-width: 0;
+  }
+}
