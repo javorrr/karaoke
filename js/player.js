@@ -1,5 +1,7 @@
+import { createLyrics } from './lyrics.js';
 export function createPlayer(elements) {
   const audio = new Audio();
+  const lyrics = createLyrics(document.querySelector('#lyrics-display'));
   let activeSong = null;
 
   const formatTime = (seconds) => {
@@ -27,6 +29,8 @@ export function createPlayer(elements) {
   audio.addEventListener('timeupdate', () => {
     elements.progressSlider.value = audio.currentTime;
     elements.currentTime.textContent = formatTime(audio.currentTime);
+
+  lyrics.update(audio.currentTime);
   });
 
   audio.addEventListener('play', () => setPlayingState(true));
@@ -69,6 +73,7 @@ export function createPlayer(elements) {
       elements.playerError.textContent = '';
       audio.src = song.audio_url;
       audio.load();
+      lyrics.load(song.lrc_url);
       elements.progressSlider.max = '0';
       elements.duration.textContent = '00:00';
       resetProgress();
