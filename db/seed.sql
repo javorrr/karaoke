@@ -7,3 +7,18 @@ INSERT INTO songs (title, artist, audio_url) VALUES
 ('Melodia nocy', 'Echo Miasta', 'songs/audio/melodia-nocy.mp3'),
 ('Ostatni takt', 'Julia Luna', 'songs/audio/ostatni-takt.mp3'),
 ('Światła miasta', 'Tomasz Vibe', 'songs/audio/swiatla-miasta.mp3');
+
+-- KAR-13: rzeczywisty plik audio i zsynchronizowany tekst
+
+INSERT INTO songs (
+    title,
+    artist,
+    audio_url,
+    lrc_url
+)
+VALUES (
+    'Piosenka testowa',
+    'Wykonawca testowy',
+    'songs/audio/piosenka-testowa.mp3',
+    'songs/lrc/piosenka-testowa.lrc'
+);
