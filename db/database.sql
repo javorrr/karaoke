@@ -4,5 +4,6 @@ CREATE TABLE songs (
     artist TEXT NOT NULL,
     audio_url TEXT NOT NULL,
     instrumental_url TEXT,
-    lrc_url TEXT
+    lrc_url TEXT,
+    play_count INTEGER NOT NULL DEFAULT 0
 );

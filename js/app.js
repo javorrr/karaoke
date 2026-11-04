@@ -1,6 +1,9 @@
 import { fetchSongs } from './api.js';
 import { setupSearch } from './search.js';
 import { createPlayer } from './player.js';
+import { createSongFilters } from './filters.js';
+import { createRecommendations } from './recommendations.js';
+import { createPopularityStore } from './popularity.js';
 
 const libraryView = document.querySelector('#library-view');
 const playerView = document.querySelector('#player-view');
@@ -8,11 +11,20 @@ const songsList = document.querySelector('#songs-list');
 const listStatus = document.querySelector('#list-status');
 const songCount = document.querySelector('#song-count');
 const searchInput = document.querySelector('#song-search');
+const playerError = document.querySelector('#player-error');
+let loadedSongs = [];
+let recommendations;
+
+const popularity = createPopularityStore(() => {
+  if (recommendations) {
+    recommendations.setSongs(loadedSongs);
+  }
+});
 
 const player = createPlayer({
   playerTitle: document.querySelector('#player-title'),
   playerArtist: document.querySelector('#player-artist'),
-  playerError: document.querySelector('#player-error'),
+  playerError,
   playButton: document.querySelector('#play-button'),
   progressSlider: document.querySelector('#progress-slider'),
   currentTime: document.querySelector('#current-time'),
@@ -20,6 +32,10 @@ const player = createPlayer({
 });
 
 function showPlayer(song) {
+  playerError.textContent = '';
+  popularity.record(song).catch((error) => {
+    playerError.textContent = error.message;
+  });
   player.load(song);
   libraryView.hidden = true;
   playerView.hidden = false;
@@ -31,6 +47,12 @@ function showLibrary() {
   playerView.hidden = true;
   libraryView.hidden = false;
 }
+
+recommendations = createRecommendations({
+  container: document.querySelector('#recommendations'),
+  onSelect: showPlayer,
+  getPlayCount: popularity.getPlayCount
+});
 
 function renderSongs(songs) {
   songsList.replaceChildren();
@@ -68,12 +90,27 @@ function renderSongs(songs) {
   });
 }
 
+const songFilters = createSongFilters({
+  elements: {
+    genre: document.querySelector('#genre-filter'),
+    language: document.querySelector('#language-filter'),
+    decade: document.querySelector('#decade-filter'),
+    reset: document.querySelector('#reset-filters')
+  },
+  onChange: renderSongs
+});
+
 async function loadSongs(query = '') {
   listStatus.textContent = 'Ładowanie piosenek...';
   try {
-    const songs = await fetchSongs(query);
-    renderSongs(songs);
+    loadedSongs = await fetchSongs(query);
+    songFilters.setSongs(loadedSongs);
+    recommendations.setSongs(loadedSongs);
+    renderSongs(songFilters.getFilteredSongs());
   } catch (error) {
+    loadedSongs = [];
+    songFilters.setSongs(loadedSongs);
+    recommendations.setSongs(loadedSongs);
     songCount.textContent = '';
     songsList.replaceChildren();
     listStatus.textContent = error.message;
