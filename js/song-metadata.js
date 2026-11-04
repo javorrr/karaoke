@@ -1,12 +1,6 @@
 const SONG_METADATA = {
-  'Blask na scenie': { genre: 'Pop', language: 'Polski', decade: '2020' },
-  'Cisza przed refrenem': { genre: 'Rock', language: 'Polski', decade: '2010' },
-  'Dalej niż wczoraj': { genre: 'Pop', language: 'Polski', decade: '2020' },
-  'Głośniej niż deszcz': { genre: 'Rock', language: 'Polski', decade: '2010' },
-  'Kolorowy rytm': { genre: 'Dance', language: 'Polski', decade: '2020' },
-  'Melodia nocy': { genre: 'Elektroniczna', language: 'Polski', decade: '2010' },
-  'Ostatni takt': { genre: 'Ballada', language: 'Polski', decade: '2020' },
-  'Światła miasta': { genre: 'Pop', language: 'Polski', decade: '2010' }
+  'Last Christmas': { genre: 'Pop', language: 'Angielski', decade: '1980' },
+  'W sumie nie jest źle': { genre: 'Pop', language: 'Polski', decade: '1970' }
 };
 
 const UNKNOWN_METADATA = {

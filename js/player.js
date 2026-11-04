@@ -24,6 +24,7 @@ export function createPlayer(elements) {
   audio.addEventListener('loadedmetadata', () => {
     elements.progressSlider.max = audio.duration;
     elements.duration.textContent = formatTime(audio.duration);
+    lyrics.setDuration(audio.duration);
   });
 
   audio.addEventListener('timeupdate', () => {
@@ -73,7 +74,7 @@ export function createPlayer(elements) {
       elements.playerError.textContent = '';
       audio.src = song.audio_url;
       audio.load();
-      lyrics.load(song.lrc_url);
+      lyrics.load(song.lrc_url).then(() => lyrics.setDuration(audio.duration));
       elements.progressSlider.max = '0';
       elements.duration.textContent = '00:00';
       resetProgress();

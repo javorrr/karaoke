@@ -23,9 +23,9 @@ Skrypt `db/init.php` usuwa poprzedni plik bazy, tworzy schemat i dodaje dane sta
 
 ## Dodawanie plików audio
 
-Pliki MP3 należy umieszczać w `songs/audio/`. Ścieżka zapisana w bazie musi odpowiadać nazwie pliku, na przykład `songs/audio/melodia-nocy.mp3`. Przykładowe rekordy wskazują na pliki, których nie ma w repozytorium, dlatego przed odtwarzaniem trzeba dodać własne pliki audio.
+Pliki MP3 należy umieszczać w `songs/audio/`. Ścieżka zapisana w bazie musi odpowiadać nazwie pliku, na przykład `songs/audio/melodia-nocy.mp3`. Nazwy plików używają małych liter, myślników zamiast spacji i formy bez polskich znaków.
 
-Folder `songs/lrc/` jest przygotowany na teksty zsynchronizowane w kolejnym sprincie.
+Pliki tekstów zsynchronizowanych należy umieszczać w `songs/lrc/` i nazywać tak samo jak pliki audio, zmieniając rozszerzenie na `.lrc`.
 
 ## Struktura
 
@@ -35,7 +35,7 @@ Folder `songs/lrc/` jest przygotowany na teksty zsynchronizowane w kolejnym spri
 - `css/recommendations.css` - style sekcji polecanych i popularnych utworów
 - `js/api.js` - komunikacja z API
 - `js/filters.js` - filtrowanie po gatunku, języku i dekadzie
-- `js/song-metadata.js` - metadane filtrów dla utworów demonstracyjnych
+- `js/song-metadata.js` - metadane filtrów dla utworów
 - `js/recommendations.js` - polecane utwory i ranking najchętniej śpiewanych
 - `js/popularity.js` - dynamiczne liczniki wyborów zapisane w przeglądarce
 - `js/search.js` - wyszukiwanie z debounce 300 ms
@@ -46,12 +46,12 @@ Folder `songs/lrc/` jest przygotowany na teksty zsynchronizowane w kolejnym spri
 - `db/` - połączenie, schemat, seed i inicjalizacja SQLite
 - `db/ensure-schema.php` - automatyczna migracja kolumny `play_count` dla istniejącej bazy
 - `songs/audio/` - lokalne pliki audio
-- `songs/lrc/` - przyszłe pliki LRC
+- `songs/lrc/` - pliki LRC odpowiadające plikom audio
 
 Panel „Dopasuj repertuar” działa razem z wyszukiwaniem i pozwala zawęzić listę
-według gatunku, języka oraz dekady. Metadane demonstracyjnych utworów są
-zdefiniowane w `js/song-metadata.js`; przy rozbudowie bazy można je przenieść
-do dodatkowych kolumn tabeli `songs` i zwracać z API.
+według gatunku, języka oraz dekady. Metadane utworów są zdefiniowane w
+`js/song-metadata.js`; przy rozbudowie bazy można je przenieść do dodatkowych
+kolumn tabeli `songs` i zwracać z API.
 
 Sekcje „Polecane piosenki” i „Najchętniej śpiewane” są budowane z aktualnej
 listy zwróconej przez API. Ranking pokazuje pięć utworów z największą liczbą

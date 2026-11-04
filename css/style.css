@@ -86,22 +86,33 @@ h2 { margin-bottom: 0; font-size: 1.45rem; }
 
 .lyrics-container {
   margin: 25px 0;
-  padding: 20px;
+  padding: 24px;
   background: var(--surface-light);
   border-radius: 10px;
 }
 
 #lyrics-display {
-  max-height: 250px;
+  height: 360px;
+  max-height: 55vh;
   overflow-y: auto;
+  padding: 12px 24px;
   text-align: center;
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
+}
+
+.lyrics-phrase {
+  min-height: 58px;
+  padding: 8px 0;
 }
 
 .lyrics-line {
-  padding: 10px;
+  box-sizing: border-box;
+  margin: 0 4px;
+  padding: 8px 2px;
   color: var(--muted);
-  opacity: 0.6;
+  opacity: 0.85;
+  font-size: 2rem;
+  line-height: 1.2;
   transition: color 0.2s, opacity 0.2s;
 }
 
@@ -109,7 +120,7 @@ h2 { margin-bottom: 0; font-size: 1.45rem; }
   color: var(--accent-bright);
   opacity: 1;
   font-weight: bold;
-  font-size: 1.15rem;
+  font-size: 2.2rem;
 }
 
 
