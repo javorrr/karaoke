@@ -73,16 +73,43 @@
           <p id="player-artist" class="player-artist">-</p>
           <p id="player-error" class="player-error" role="alert"></p>
           <div class="player-controls">
-            <button id="play-button" class="play-button" type="button" aria-label="Odtwórz piosenkę">▶ <span>Play</span></button>
+            <div class="transport-controls">
+              <button id="seek-back" class="secondary-button" type="button" aria-label="Przewiń 10 sekund do tyłu">−10 s</button>
+              <button id="play-button" class="play-button" type="button" aria-label="Odtwórz piosenkę">▶ <span>Play</span></button>
+              <button id="seek-forward" class="secondary-button" type="button" aria-label="Przewiń 10 sekund do przodu">+10 s</button>
+            </div>
             <div class="timeline">
-              <input id="progress-slider" type="range" min="0" max="0" value="0" step="0.1" aria-label="Pozycja w utworze">
+              <input id="progress-slider" type="range" min="0" max="0" value="0" step="0.01" aria-label="Pozycja w utworze" disabled>
               <div class="time-row"><span id="current-time">00:00</span><span id="duration">00:00</span></div>
+            </div>
+            <div class="mixer-controls">
+              <div class="volume-control">
+                <button id="mute-button" class="icon-button" type="button" aria-label="Wycisz dźwięk" aria-pressed="false">🔊</button>
+                <input id="volume-slider" type="range" min="0" max="1" value="1" step="0.01" aria-label="Głośność">
+              </div>
+              <label class="select-control" for="speed-select">
+                <span>Tempo</span>
+                <select id="speed-select">
+                  <option value="0.5">0,5×</option>
+                  <option value="0.75">0,75×</option>
+                  <option value="1" selected>1×</option>
+                  <option value="1.25">1,25×</option>
+                  <option value="1.5">1,5×</option>
+                </select>
+              </label>
+              <label class="toggle-control" for="lyrics-follow">
+                <input id="lyrics-follow" type="checkbox" checked>
+                <span>Śledź tekst</span>
+              </label>
             </div>
           </div>
         </div>
       </div>
       <section class="lyrics-container" aria-labelledby="lyrics-title">
-        <h2 id="lyrics-title">Tekst piosenki</h2>
+        <div class="lyrics-heading">
+          <h2 id="lyrics-title">Tekst piosenki</h2>
+          <span class="lyrics-hint">Kliknij wers, aby przewinąć</span>
+        </div>
         <div id="lyrics-display" aria-live="polite"></div>
       </section>
     </section>

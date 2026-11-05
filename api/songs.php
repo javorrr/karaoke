@@ -21,7 +21,26 @@ try {
         $statement->execute(['query' => '%' . $query . '%']);
     }
 
-    echo json_encode($statement->fetchAll(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    $songs = $statement->fetchAll();
+    $buildStreamUrl = static function (string $url): ?string {
+        if ($url === '') {
+            return null;
+        }
+
+        if (preg_match('#^[a-z][a-z0-9+.-]*://#i', $url)) {
+            return $url;
+        }
+
+        return 'api/audio.php?file=' . rawurlencode($url);
+    };
+
+    foreach ($songs as &$song) {
+        $song['stream_url'] = $buildStreamUrl((string) ($song['audio_url'] ?? ''));
+        $song['instrumental_stream_url'] = $buildStreamUrl((string) ($song['instrumental_url'] ?? ''));
+    }
+    unset($song);
+
+    echo json_encode($songs, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 } catch (Throwable $exception) {
     http_response_code(500);
     echo json_encode(['error' => 'Wystąpił błąd serwera podczas pobierania piosenek.'], JSON_UNESCAPED_UNICODE);

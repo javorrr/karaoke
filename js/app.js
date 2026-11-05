@@ -26,9 +26,15 @@ const player = createPlayer({
   playerArtist: document.querySelector('#player-artist'),
   playerError,
   playButton: document.querySelector('#play-button'),
+  seekBack: document.querySelector('#seek-back'),
+  seekForward: document.querySelector('#seek-forward'),
   progressSlider: document.querySelector('#progress-slider'),
   currentTime: document.querySelector('#current-time'),
-  duration: document.querySelector('#duration')
+  duration: document.querySelector('#duration'),
+  muteButton: document.querySelector('#mute-button'),
+  volumeSlider: document.querySelector('#volume-slider'),
+  speedSelect: document.querySelector('#speed-select'),
+  followLyrics: document.querySelector('#lyrics-follow')
 });
 
 function showPlayer(song) {

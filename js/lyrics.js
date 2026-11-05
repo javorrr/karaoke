@@ -1,8 +1,10 @@
-
-export function createLyrics(display) {
+export function createLyrics(display, { onSeek } = {}) {
   let lines = [];
+  let lineElements = [];
   let audioDuration = null;
   let activeTime = null;
+  let follow = true;
+  let loadId = 0;
 
   function parseLRC(content) {
     const parsed = [];
@@ -43,7 +45,11 @@ export function createLyrics(display) {
   }
 
   function synchronizePlainText() {
-    if (!Number.isFinite(audioDuration) || !lines.some(line => line.time === null)) {
+    if (!Number.isFinite(audioDuration) || audioDuration <= 0) {
+      return;
+    }
+
+    if (!lines.length || !lines.every(line => line.time === null)) {
       return;
     }
 
@@ -52,6 +58,13 @@ export function createLyrics(display) {
       ...line,
       time: index * interval
     }));
+
+    lineElements.forEach((element, index) => {
+      element.dataset.time = String(lines[index].time);
+      element.tabIndex = 0;
+      element.setAttribute('role', 'button');
+      element.setAttribute('aria-label', `Przewiń do: ${lines[index].text}`);
+    });
   }
 
   function groupIntoPhrases(entries) {
@@ -74,8 +87,71 @@ export function createLyrics(display) {
     return phrases;
   }
 
+  function scrollToLine(element) {
+    if (!element) return;
+
+    const displayRect = display.getBoundingClientRect();
+    const lineRect = element.getBoundingClientRect();
+    const target = display.scrollTop
+      + (lineRect.top - displayRect.top)
+      - (display.clientHeight - lineRect.height) / 2;
+
+    display.scrollTo({
+      top: Math.max(0, target),
+      behavior: 'smooth'
+    });
+  }
+
+  function render() {
+    display.replaceChildren();
+    lineElements = [];
+
+    groupIntoPhrases(lines).forEach(phraseLines => {
+      const phrase = document.createElement('div');
+      phrase.className = 'lyrics-phrase';
+
+      phraseLines.forEach(line => {
+        const word = document.createElement('span');
+        const index = lineElements.length;
+        word.className = 'lyrics-line';
+        word.textContent = `${line.text} `;
+
+        if (Number.isFinite(line.time)) {
+          word.dataset.time = String(line.time);
+          word.tabIndex = 0;
+          word.setAttribute('role', 'button');
+          word.setAttribute('aria-label', `Przewiń do: ${line.text}`);
+        }
+
+        const seek = () => {
+          const time = lines[index]?.time;
+          if (Number.isFinite(time)) {
+            onSeek?.(time);
+          }
+        };
+
+        word.addEventListener('click', seek);
+        word.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            seek();
+          }
+        });
+
+        lineElements.push(word);
+        phrase.appendChild(word);
+      });
+
+      display.appendChild(phrase);
+    });
+  }
+
   async function load(url) {
+    loadId += 1;
+    const currentLoadId = loadId;
+
     lines = [];
+    lineElements = [];
     audioDuration = null;
     activeTime = null;
     display.replaceChildren();
@@ -89,7 +165,10 @@ export function createLyrics(display) {
       const response = await fetch(url);
       if (!response.ok) throw new Error('Brak pliku LRC');
 
-      lines = parseLRC(await response.text());
+      const content = await response.text();
+      if (currentLoadId !== loadId) return;
+
+      lines = parseLRC(content);
 
       if (!lines.length) {
         display.textContent = 'Brak zsynchronizowanego tekstu.';
@@ -97,32 +176,22 @@ export function createLyrics(display) {
       }
 
       synchronizePlainText();
-
-      groupIntoPhrases(lines).forEach(phraseLines => {
-        const phrase = document.createElement('div');
-        phrase.className = 'lyrics-phrase';
-
-        phraseLines.forEach(line => {
-          const word = document.createElement('span');
-          word.className = 'lyrics-line';
-          word.textContent = `${line.text} `;
-          phrase.appendChild(word);
-        });
-
-        display.appendChild(phrase);
-      });
+      render();
     } catch {
+      if (currentLoadId !== loadId) return;
       display.textContent = 'Nie udało się pobrać tekstu.';
     }
   }
 
   function setDuration(duration) {
+    if (!Number.isFinite(duration) || duration <= 0) return;
+
     audioDuration = duration;
     synchronizePlainText();
   }
 
   function update(currentTime) {
-    if (!lines.length) return;
+    if (!lines.length || !lineElements.length) return;
 
     let activeIndex = -1;
 
@@ -134,24 +203,40 @@ export function createLyrics(display) {
 
     const nextActiveTime = activeIndex >= 0 ? lines[activeIndex].time : null;
 
-    const wordElements = [...display.querySelectorAll('.lyrics-line')];
-
-    wordElements.forEach((element, index) => {
+    lineElements.forEach((element, index) => {
       const active = activeIndex >= 0 && lines[index].time === nextActiveTime;
-
       element.classList.toggle('active', active);
+
+      if (active) {
+        element.setAttribute('aria-current', 'true');
+      } else {
+        element.removeAttribute('aria-current');
+      }
     });
 
-    if (activeIndex >= 0 && nextActiveTime !== activeTime) {
-      wordElements[activeIndex].scrollIntoView({
-        behavior: 'auto',
-        block: 'nearest',
-        inline: 'nearest'
-      });
+    if (activeIndex >= 0 && nextActiveTime !== activeTime && follow) {
+      let scrollIndex = activeIndex;
+
+      while (scrollIndex > 0 && lines[scrollIndex - 1].time === nextActiveTime) {
+        scrollIndex -= 1;
+      }
+
+      scrollToLine(lineElements[scrollIndex]);
     }
 
     activeTime = nextActiveTime;
   }
 
-  return { load, setDuration, update };
+  function setFollow(value) {
+    follow = Boolean(value);
+
+    if (!follow || activeTime === null) return;
+
+    const index = lines.findIndex(line => line.time === activeTime);
+    if (index >= 0) {
+      scrollToLine(lineElements[index]);
+    }
+  }
+
+  return { load, setDuration, update, setFollow };
 }

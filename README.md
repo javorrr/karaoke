@@ -39,9 +39,10 @@ Pliki tekstów zsynchronizowanych należy umieszczać w `songs/lrc/` i nazywać 
 - `js/recommendations.js` - polecane utwory i ranking najchętniej śpiewanych
 - `js/popularity.js` - dynamiczne liczniki wyborów zapisane w przeglądarce
 - `js/search.js` - wyszukiwanie z debounce 300 ms
-- `js/player.js` - sterowanie audio i paskiem postępu
+- `js/player.js` - sterowanie audio, paskiem postępu, głośnością i tempem
 - `js/app.js` - uruchomienie aplikacji i renderowanie listy
 - `api/songs.php` - endpoint listy i wyszukiwania piosenek
+- `api/audio.php` - strumieniowanie plików audio z obsługą HTTP Range (przewijanie)
 - `api/song-play.php` - globalna, atomowa aktualizacja liczby wyborów utworu
 - `db/` - połączenie, schemat, seed i inicjalizacja SQLite
 - `db/ensure-schema.php` - automatyczna migracja kolumny `play_count` dla istniejącej bazy
@@ -58,6 +59,19 @@ listy zwróconej przez API. Ranking pokazuje pięć utworów z największą licz
 wyborów. Liczniki są przechowywane w kolumnie `songs.play_count` w SQLite,
 więc aktualizacja jest wspólna dla wszystkich użytkowników i przeglądarek.
 
+## Odtwarzacz
+
+Pasek postępu można przewijać myszą, dotykiem lub klawiaturą. W trakcie
+przewijania tekst piosenki od razu podświetla właściwy wers, a kliknięcie
+w dowolny wers przeskakuje do jego czasu. Odtwarzacz udostępnia też wyciszanie,
+regulację głośności, tempo odtwarzania (0,5×–1,5×) oraz przewijanie o 10 sekund
+w obie strony. Ustawienia głośności, wyciszenia, tempa i śledzenia tekstu są
+zapamiętywane w przeglądarce.
+
+Pliki audio są serwowane przez `api/audio.php`, ponieważ wbudowany serwer PHP
+nie obsługuje zapytań częściowych (HTTP Range). Dzięki temu przewijanie działa
+również po uruchomieniu projektu przez `php -S`.
+
 ## Zakres Sprintu 1
 
-Zrealizowane są funkcje KAR-4 (play, pause, przewijanie, czas i obsługa błędu pliku) oraz KAR-6 (wyszukiwanie po tytule i wykonawcy). Teksty LRC, wyciszanie wokalu, logowanie, ulubione i nagrywanie nie są częścią tego sprintu.
+Zrealizowane są funkcje KAR-4 (play, pause, przewijanie, czas i obsługa błędu pliku), KAR-6 (wyszukiwanie po tytule i wykonawcy) oraz zsynchronizowany tekst LRC. Poza zakresem pozostają: wyciszanie samego wokalu (wymaga osobnej ścieżki instrumentalnej), logowanie, ulubione i nagrywanie.
