@@ -28,6 +28,17 @@
     box-shadow var(--t-base) var(--e-out);
 }
 
+.song-row::after {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: -0.6rem;
+  width: 4px;
+  background: var(--pink);
+  content: "";
+  opacity: 0;
+  transition: opacity var(--t-base) var(--e-out);
+}
+
 .song-row::before {
   grid-area: track;
   align-self: start;
@@ -102,7 +113,11 @@
 
 .song-row:focus-within {
   background: color-mix(in oklab, var(--pink) 7%, transparent);
-  box-shadow: inset 4px 0 0 var(--pink);
+  box-shadow: -0.6rem 0 0 color-mix(in oklab, var(--pink) 7%, transparent);
+}
+
+.song-row:focus-within::after {
+  opacity: 1;
 }
 
 .song-row:focus-within .song-title {
@@ -112,7 +127,11 @@
 @media (hover: hover) {
   .song-row:hover {
     background: color-mix(in oklab, var(--pink) 7%, transparent);
-    box-shadow: inset 4px 0 0 var(--pink);
+    box-shadow: -0.6rem 0 0 color-mix(in oklab, var(--pink) 7%, transparent);
+  }
+
+  .song-row:hover::after {
+    opacity: 1;
   }
 
   .song-row:hover .song-title {

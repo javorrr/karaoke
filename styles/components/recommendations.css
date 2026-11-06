@@ -108,13 +108,15 @@
   gap: 0.15rem var(--space-sm);
   padding-block: 0.75rem;
   border-bottom: 1px solid var(--line);
-  transition: background-color var(--t-base) var(--e-out);
+  transition:
+    background-color var(--t-base) var(--e-out),
+    box-shadow var(--t-base) var(--e-out);
 }
 
 .popular-song::before {
   position: absolute;
   inset-block: 0;
-  inset-inline-start: -0.4rem;
+  inset-inline-start: -0.9rem;
   width: 4px;
   background: var(--pink);
   content: "";
@@ -124,6 +126,7 @@
 
 .popular-song:focus-within {
   background: color-mix(in oklab, var(--pink) 7%, transparent);
+  box-shadow: -0.9rem 0 0 color-mix(in oklab, var(--pink) 7%, transparent);
 }
 
 .popular-song:focus-within::before {
@@ -208,6 +211,7 @@
 @media (hover: hover) {
   .popular-song:hover {
     background: color-mix(in oklab, var(--pink) 7%, transparent);
+    box-shadow: -0.9rem 0 0 color-mix(in oklab, var(--pink) 7%, transparent);
   }
 
   .popular-song:hover::before {
