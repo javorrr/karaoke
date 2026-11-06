@@ -16,14 +16,14 @@ function createSongButton(song, className, onSelect, note) {
   const artist = document.createElement('span');
   artist.className = 'recommendation-song-artist';
   artist.textContent = song.artist;
-  button.append(title, artist);
+  button.append(title, document.createTextNode(' '), artist);
   if (note) {
     const noteElement = document.createElement('span');
     noteElement.className = 'recommendation-song-note';
     noteElement.textContent = note;
-    button.append(noteElement);
+    button.append(document.createTextNode(' '), noteElement);
   }
-  button.setAttribute('aria-label', `Śpiewaj: ${song.title} - ${song.artist}`);
+  button.setAttribute('aria-label', `Śpiewaj: ${song.title} - ${song.artist}${note ? ` — ${note}` : ''}`);
   button.addEventListener('click', () => onSelect(song));
   return button;
 }

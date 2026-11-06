@@ -1,0 +1,21 @@
+{
+  "name": "karaoke-scena",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Karaoke — SCENA visual system",
+  "scripts": {
+    "serve": "php -S 127.0.0.1:8123 -t .",
+    "test": "playwright test",
+    "test:update": "playwright test --update-snapshots",
+    "test:headed": "playwright test --headed",
+    "test:a11y": "playwright test tests/a11y.spec.js",
+    "test:visual": "playwright test tests/visual.spec.js",
+    "test:report": "playwright show-report",
+    "lighthouse": "lighthouse http://127.0.0.1:8123 --chrome-path=\"C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe\" --only-categories=performance,accessibility,best-practices,seo --output=json --output-path=.artifacts/lighthouse.json --chrome-flags=\"--headless=new\""
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@playwright/test": "^1.65.0"
+  }
+}

@@ -1,0 +1,160 @@
+/* ==========================================================================
+   SCENA — DESIGN TOKENS
+   A screen-printed live setlist: cool paper, two inks, hard offsets.
+   The player view is the same poster under stage lights.
+
+   Token rules
+   -----------
+   · Colour is authored in OKLab-friendly hex and mixed with color-mix().
+   · --pink is decorative / large-display only (3.0:1 on paper).
+   · --pink-ink is the text-safe pink (6.1:1 on paper).
+   · Body copy uses --ink on --paper (≈15:1, AAA).
+   · Every motion token is consumed inside prefers-reduced-motion guards.
+   · Spacing is a 4px base; layout rhythm is fluid via clamp().
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ---- Paper & ink ------------------------------------------------------ */
+  --paper: #f4f1e8;
+  --paper-light: #fbf9f3;
+  --paper-deep: #e7e1d2;
+  --ink: #14172e;
+  --ink-soft: #5a5f78;
+  --cobalt: #1b2a6b;
+  --cobalt-deep: #101a3a;
+  --pink: #ff3d6e;
+  --pink-ink: #b01545;
+  --stage: #0b1026;
+  --stage-raised: #141b3d;
+  --stage-deep: #070b1a;
+  --cream: #fff8ee;
+  --danger: #a30e36;
+  --danger-stage: #ff9db4;
+
+  /* ---- Semantic surfaces (library) ------------------------------------- */
+  --surface: var(--paper);
+  --surface-raised: var(--paper-light);
+  --surface-sunken: var(--paper-deep);
+  --text: var(--ink);
+  --text-muted: var(--ink-soft);
+  --accent: var(--cobalt);
+  --accent-ink: var(--cream);
+  --highlight: var(--pink);
+  --highlight-ink: var(--pink-ink);
+  --focus: var(--cobalt);
+  --focus-contrast: var(--paper);
+  --line: color-mix(in oklab, var(--ink) 16%, transparent);
+  --line-strong: color-mix(in oklab, var(--ink) 34%, transparent);
+  --dot: color-mix(in oklab, var(--ink) 9%, transparent);
+  --shadow-color: var(--ink);
+  --shadow-soft: color-mix(in oklab, var(--ink) 18%, transparent);
+  --selection-bg: var(--pink);
+  --selection-ink: var(--ink);
+  --scrim: color-mix(in oklab, var(--ink) 10%, transparent);
+
+  /* ---- Typography ------------------------------------------------------- */
+  --font-display: "Bricolage Grotesque", "Arial Black", "Segoe UI", sans-serif;
+  --font-body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --font-accent: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --font-mono: "Geist Mono", "Cascadia Mono", Consolas, monospace;
+
+  /* Fluid scale — 1.2 ratio at small sizes, wider display steps. */
+  --step--2: clamp(0.694rem, 0.68rem + 0.07vw, 0.75rem);
+  --step--1: clamp(0.833rem, 0.8rem + 0.15vw, 0.9rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --step-1: clamp(1.2rem, 1.12rem + 0.4vw, 1.4rem);
+  --step-2: clamp(1.44rem, 1.3rem + 0.7vw, 1.75rem);
+  --step-3: clamp(1.728rem, 1.5rem + 1.14vw, 2.2rem);
+  --step-4: clamp(2.074rem, 1.7rem + 1.87vw, 2.75rem);
+  --step-5: clamp(2.488rem, 1.9rem + 2.94vw, 3.5rem);
+  --step-6: clamp(2.986rem, 2rem + 4.93vw, 5rem);
+  --step-7: clamp(3.583rem, 1.9rem + 8.4vw, 7.5rem);
+
+  --leading-none: 0.92;
+  --leading-tight: 1.08;
+  --leading-snug: 1.25;
+  --leading-body: 1.6;
+  --tracking-display: -0.035em;
+  --tracking-label: 0.16em;
+
+  /* ---- Space ------------------------------------------------------------ */
+  --space-3xs: 0.125rem;
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  --space-4xl: 6rem;
+  --space-5xl: 8rem;
+  --space-section: clamp(3.5rem, 7vw, 7.5rem);
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --container: 1180px;
+  --container-wide: 1440px;
+  --measure: 62ch;
+
+  /* ---- Shape & depth ---------------------------------------------------- */
+  --r-1: 2px;
+  --r-2: 6px;
+  --r-pill: 999px;
+  --border-hair: 1px;
+  --border-ink: 1.5px;
+  --border-bold: 2.5px;
+  --shadow-stamp: 5px 5px 0 var(--shadow-color);
+  --shadow-stamp-sm: 3px 3px 0 var(--shadow-color);
+  --shadow-stage: 0 2rem 5rem -1.5rem rgb(0 0 0 / 0.72);
+  --shadow-glow: 0 0 3.5rem -0.75rem
+    color-mix(in oklab, var(--pink) 70%, transparent);
+
+  /* ---- Motion ----------------------------------------------------------- */
+  --e-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --e-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --e-stamp: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --t-fast: 120ms;
+  --t-base: 180ms;
+  --t-slow: 240ms;
+  --t-enter: 600ms;
+  --t-hero: 900ms;
+  --stagger: 60ms;
+
+  /* ---- Z ---------------------------------------------------------------- */
+  --z-base: 0;
+  --z-raised: 10;
+  --z-header: 100;
+  --z-overlay: 200;
+  --z-skip: 300;
+}
+
+/* ==========================================================================
+   STAGE THEME
+   Applied by :has() when the player view loses [hidden]. No JS state needed.
+   ========================================================================== */
+
+body:has(#player-view:not([hidden])) {
+  color-scheme: dark;
+
+  --surface: var(--stage);
+  --surface-raised: var(--stage-raised);
+  --surface-sunken: var(--stage-deep);
+  --text: var(--cream);
+  --text-muted: color-mix(in oklab, var(--cream) 72%, transparent);
+  --accent: var(--pink);
+  --accent-ink: var(--ink);
+  --highlight: var(--pink);
+  --highlight-ink: var(--pink);
+  --focus: var(--pink);
+  --focus-contrast: var(--stage);
+  --line: color-mix(in oklab, var(--cream) 16%, transparent);
+  --line-strong: color-mix(in oklab, var(--cream) 34%, transparent);
+  --dot: color-mix(in oklab, var(--cream) 6%, transparent);
+  --shadow-color: #000;
+  --shadow-soft: rgb(0 0 0 / 0.55);
+  --danger: var(--danger-stage);
+  --selection-bg: var(--pink);
+  --selection-ink: var(--ink);
+  --scrim: rgb(0 0 0 / 0.35);
+}

@@ -1,0 +1,68 @@
+/* ==========================================================================
+   SCENA — HEADER
+   Stamped monogram, tight wordmark, live-session lamp.
+   ========================================================================== */
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex: 0 0 auto;
+}
+
+.brand-mark {
+  display: grid;
+  width: 2.1rem;
+  height: 2.1rem;
+  place-items: center;
+  border: 1.5px solid var(--ink);
+  background: var(--cobalt);
+  box-shadow: 3px 3px 0 var(--pink);
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  line-height: 1;
+  transform: rotate(-2deg);
+  transition: transform var(--t-base) var(--e-stamp);
+}
+
+.brand:hover .brand-mark,
+.brand:focus-visible .brand-mark {
+  transform: rotate(2deg) translateY(-1px);
+}
+
+.brand-word {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.brand-dot {
+  color: var(--pink-ink);
+}
+
+.live-dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--pink);
+  box-shadow: 0 0 0 0 color-mix(in oklab, var(--pink) 42%, transparent);
+}
+
+/* The wordmark grows on the first comfortable width. */
+@media (min-width: 381px) {
+  .brand-word {
+    font-size: 1.35rem;
+  }
+
+  .brand-mark {
+    width: 2.4rem;
+    height: 2.4rem;
+    font-size: 1.35rem;
+  }
+}

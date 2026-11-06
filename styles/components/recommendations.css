@@ -1,0 +1,217 @@
+/* ==========================================================================
+   SCENA — RECOMMENDATIONS
+   Ticker cards with a folded pink corner; a chart with outlined numerals.
+   ========================================================================== */
+
+.recommendations:not([hidden]) {
+  display: grid;
+  gap: var(--space-xl);
+}
+
+.recommendation-group {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.recommendation-group > h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: var(--step-2);
+}
+
+.recommendation-group > h2::before {
+  width: 0.7rem;
+  height: 0.7rem;
+  flex: 0 0 auto;
+  border: 1px solid var(--ink);
+  background: var(--pink);
+  content: "";
+}
+
+.recommended-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: var(--space-md);
+}
+
+.recommended-song {
+  position: relative;
+  display: grid;
+  gap: 0.35rem;
+  padding: 1.1rem 1.25rem 1.1rem 1.4rem;
+  border: var(--border-ink) solid var(--ink);
+  border-inline-start: 6px solid var(--pink);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-stamp-sm);
+  text-align: left;
+  transition:
+    transform var(--t-base) var(--e-out),
+    box-shadow var(--t-base) var(--e-out),
+    background-color var(--t-base) var(--e-out);
+}
+
+.recommended-song::after {
+  position: absolute;
+  top: -1.5px;
+  right: -1.5px;
+  border-width: 0 1.4rem 1.4rem 0;
+  border-style: solid;
+  border-color: transparent var(--pink) transparent transparent;
+  content: "";
+}
+
+.recommended-song:hover {
+  background: var(--surface);
+  box-shadow: 6px 6px 0 var(--shadow-color);
+  transform: translate(-2px, -2px);
+}
+
+.recommended-song:active {
+  box-shadow: 1px 1px 0 var(--shadow-color);
+  transform: translate(1px, 1px);
+}
+
+.recommendation-song-title {
+  display: block;
+  padding-inline-end: 0.9rem;
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
+.recommendation-song-artist {
+  display: block;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.recommendation-song-note {
+  display: block;
+  margin-block-start: 0.4rem;
+  padding-block-start: 0.4rem;
+  border-top: 1px dashed var(--line-strong);
+  color: var(--pink-ink);
+  font-family: var(--font-accent);
+  font-size: var(--step-1);
+  font-style: italic;
+  line-height: 1.2;
+}
+
+/* ---- Chart ------------------------------------------------------------- */
+.popular-list {
+  border-top: var(--border-ink) solid var(--ink);
+}
+
+.popular-song {
+  display: grid;
+  grid-template-areas:
+    "rank details button"
+    "rank plays button";
+  grid-template-columns: 2.3rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.15rem var(--space-sm);
+  padding-block: 0.75rem;
+  border-bottom: 1px solid var(--line);
+  transition: background-color var(--t-base) var(--e-out);
+}
+
+.popular-song:hover {
+  background: color-mix(in oklab, var(--pink) 7%, transparent);
+}
+
+.popular-rank {
+  grid-area: rank;
+  color: transparent;
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  line-height: 0.8;
+  -webkit-text-stroke: 1.5px var(--ink);
+}
+
+@supports not (-webkit-text-stroke: 1px currentColor) {
+  .popular-rank {
+    color: var(--ink-soft);
+  }
+}
+
+.popular-details {
+  display: grid;
+  grid-area: details;
+  min-width: 0;
+  gap: 0.1rem;
+}
+
+.popular-details strong {
+  font-family: var(--font-display);
+  font-size: var(--step-0);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.popular-details span {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.popular-plays {
+  grid-area: plays;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  white-space: nowrap;
+}
+
+.popular-sing-button {
+  grid-area: button;
+  align-self: center;
+  padding: 0.45rem 0.85rem;
+  border: var(--border-ink) solid var(--ink);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    background-color var(--t-base) var(--e-out),
+    color var(--t-base) var(--e-out);
+}
+
+.popular-sing-button:hover {
+  background: var(--cobalt);
+  color: var(--cream);
+}
+
+@media (min-width: 641px) {
+  .popular-list {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) auto auto;
+    column-gap: var(--space-md);
+  }
+
+  .popular-song {
+    grid-column: 1 / -1;
+    grid-template-areas: "rank details plays button";
+    grid-template-columns: subgrid;
+    gap: var(--space-md);
+    padding-block: 0.85rem;
+  }
+
+  .popular-rank {
+    font-size: var(--step-4);
+  }
+}

@@ -69,7 +69,7 @@ export function createPlayer(elements) {
     elements.playButton.innerHTML = isPlaying
       ? '<span class="pause-glyph" aria-hidden="true"></span><span>Pause</span>'
       : '<span class="play-glyph" aria-hidden="true"></span><span>Play</span>';
-    elements.playButton.setAttribute('aria-label', isPlaying ? 'Wstrzymaj piosenkę' : 'Odtwórz piosenkę');
+    elements.playButton.setAttribute('aria-label', isPlaying ? 'Pause — wstrzymaj piosenkę' : 'Play — odtwórz piosenkę');
   };
 
   const updateMuteUi = () => {
@@ -78,7 +78,7 @@ export function createPlayer(elements) {
 
     elements.muteButton.textContent = icon;
     elements.muteButton.setAttribute('aria-pressed', String(muted));
-    elements.muteButton.setAttribute('aria-label', muted ? 'Włącz dźwięk' : 'Wycisz dźwięk');
+    elements.muteButton.setAttribute('aria-label', muted ? 'muted — włącz dźwięk' : 'sound — wycisz dźwięk');
     elements.volumeSlider.value = String(volume);
     elements.volumeSlider.style.setProperty('--volume', `${volume * 100}%`);
     audio.volume = volume;

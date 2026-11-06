@@ -1,0 +1,347 @@
+/* ==========================================================================
+   SCENA — MOTION
+   Personality: energetic, printed. Fast feedback, authored entrances,
+   one signature "lights down" moment. Every rule is reduce-safe.
+   ========================================================================== */
+
+/* ---- Keyframes --------------------------------------------------------- */
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes ink-pull {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(-10% -10% -10% -10%);
+  }
+}
+
+@keyframes stamp-in {
+  0% {
+    opacity: 0;
+    transform: scale(1.12) rotate(-2deg);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes live-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--pink) 42%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 0.45rem transparent;
+  }
+}
+
+@keyframes ring-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cross-fade {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 0.9;
+  }
+}
+
+@keyframes cue-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes wave-shift {
+  to {
+    background-position: 22px 0;
+  }
+}
+
+@keyframes play-glow {
+  50% {
+    box-shadow:
+      0 0 0 1px var(--pink),
+      0 0 2.5rem 0 color-mix(in oklab, var(--pink) 55%, transparent);
+  }
+}
+
+@keyframes lights-down {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes header-rule {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes hero-drift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-2rem);
+  }
+}
+
+@keyframes vt-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ---- Authored entrances ------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  .live-dot {
+    animation: live-pulse 2.6s var(--e-in-out) infinite;
+  }
+
+  .signal-ring {
+    animation: ring-spin 28s linear infinite;
+  }
+
+  .signal-ring--inner {
+    animation-direction: reverse;
+    animation-duration: 20s;
+  }
+
+  .signal-cross--one {
+    animation: cross-fade 7s var(--e-in-out) infinite alternate;
+  }
+
+  .signal-cross--two {
+    animation: cross-fade 9s var(--e-in-out) infinite alternate-reverse;
+  }
+
+  .scroll-cue-icon {
+    animation: cue-bob 2.2s var(--e-in-out) infinite;
+  }
+
+  /* Library entrance */
+  .library-view:not([hidden]) .intro > :not(h1) {
+    animation: fade-rise 700ms var(--e-out) both;
+  }
+
+  .library-view:not([hidden]) .intro > :nth-child(1) {
+    animation-delay: 40ms;
+  }
+
+  .library-view:not([hidden]) .intro > :nth-child(3) {
+    animation-delay: 220ms;
+  }
+
+  .library-view:not([hidden]) .intro > :nth-child(4) {
+    animation-delay: 300ms;
+  }
+
+  .library-view:not([hidden]) .intro h1 {
+    animation: ink-pull 900ms var(--e-out) both 80ms;
+  }
+
+  .library-view:not([hidden]) .intro h1 em {
+    animation: ghost-settle 700ms var(--e-out) both 520ms;
+  }
+
+  .library-view:not([hidden]) .hero-signal {
+    animation: fade-rise 800ms var(--e-out) both 240ms;
+  }
+
+  .library-view:not([hidden]) .search-box {
+    animation: fade-rise 600ms var(--e-out) both 320ms;
+  }
+
+  .library-view:not([hidden]) .filters-panel {
+    animation: fade-rise 600ms var(--e-out) both 380ms;
+  }
+
+  .library-view:not([hidden]) .recommendations:not([hidden]) {
+    animation: fade-rise 600ms var(--e-out) both 440ms;
+  }
+
+  .library-view:not([hidden]) .list-heading,
+  .library-view:not([hidden]) .songs-list {
+    animation: fade-rise 600ms var(--e-out) both 500ms;
+  }
+
+  /* Player entrance — the lights-down moment */
+  .player-view:not([hidden]) {
+    animation: lights-down 420ms var(--e-in-out) both;
+  }
+
+  .player-view:not([hidden]) .player-art {
+    animation: stamp-in 760ms var(--e-stamp) both 90ms;
+  }
+
+  .player-view:not([hidden]) .player-details > * {
+    animation: fade-rise 560ms var(--e-out) both;
+  }
+
+  .player-view:not([hidden]) .player-details > :nth-child(1) {
+    animation-delay: 120ms;
+  }
+
+  .player-view:not([hidden]) .player-details > :nth-child(2) {
+    animation-delay: 180ms;
+  }
+
+  .player-view:not([hidden]) .player-details > :nth-child(3) {
+    animation-delay: 240ms;
+  }
+
+  .player-view:not([hidden]) .player-details > :nth-child(4) {
+    animation-delay: 300ms;
+  }
+
+  .player-view:not([hidden]) .player-details > :nth-child(5) {
+    animation-delay: 360ms;
+  }
+
+  .player-view:not([hidden]) .lyrics-container {
+    animation: fade-rise 700ms var(--e-out) both 420ms;
+  }
+
+  /* Playing state — CSS-only via the glyph swap */
+  body:has(.pause-glyph) .play-button {
+    animation: play-glow 2.4s var(--e-in-out) infinite;
+  }
+
+  body:has(.pause-glyph) .player-art-wave {
+    animation: wave-shift 1.1s steps(6) infinite;
+  }
+
+  /* @starting-style fallback for the two-view swap */
+  .player-view:not([hidden]) .player-panel {
+    transition:
+      opacity 500ms var(--e-out),
+      translate 500ms var(--e-out);
+  }
+
+  @starting-style {
+    .player-view:not([hidden]) .player-panel {
+      opacity: 0;
+      translate: 0 1rem;
+    }
+  }
+
+  .library-view:not([hidden]) .hero-layout {
+    transition: opacity 400ms var(--e-out);
+  }
+
+  @starting-style {
+    .library-view:not([hidden]) .hero-layout {
+      opacity: 0;
+    }
+  }
+}
+
+@keyframes ghost-settle {
+  from {
+    text-shadow: 0.12em 0.12em 0 transparent;
+  }
+  to {
+    text-shadow: 0.035em 0.035em 0
+      color-mix(in oklab, var(--pink) 38%, transparent);
+  }
+}
+
+/* ---- Scroll-driven ----------------------------------------------------- */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .site-header::after {
+      position: absolute;
+      inset-inline: 0;
+      bottom: -1px;
+      height: 2px;
+      background: var(--pink);
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: header-rule linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 0 12rem;
+      content: "";
+      pointer-events: none;
+    }
+
+    .hero-signal {
+      animation: hero-drift linear both;
+      animation-timeline: view();
+      animation-range: entry 0 cover 55%;
+    }
+  }
+}
+
+/* ---- Native view transitions (cross-document progressive enhancement) -- */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: vt-out 180ms var(--e-in-out) both;
+}
+
+::view-transition-new(root) {
+  animation: vt-in 320ms var(--e-out) both;
+}
+
+/* ---- Reduced motion ---------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  .site-header::after,
+  .hero-signal,
+  .signal-ring,
+  .signal-cross,
+  .live-dot,
+  .scroll-cue-icon,
+  .player-art-wave {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,105 @@
+/* ==========================================================================
+   SCENA — SEARCH
+   A ruled index line, not a rounded input. The underline is the affordance.
+   ========================================================================== */
+
+.search-box {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(0.5rem, 1.5vw, 0.9rem);
+  padding-block: clamp(0.75rem, 2vw, 1.25rem);
+  border-bottom: var(--border-bold) solid var(--ink);
+  cursor: text;
+  transition: border-color var(--t-base) var(--e-out);
+}
+
+.search-box::after {
+  position: absolute;
+  inset-inline: 0;
+  bottom: calc(var(--border-bold) * -1);
+  height: var(--border-bold);
+  background: var(--pink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--t-slow) var(--e-out);
+  content: "";
+}
+
+.search-box:focus-within::after {
+  transform: scaleX(1);
+}
+
+.search-box:focus-within .search-icon {
+  color: var(--pink-ink);
+  transform: rotate(45deg);
+}
+
+.search-index {
+  color: var(--pink-ink);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
+
+.search-icon {
+  color: var(--text-muted);
+  font-size: var(--step-2);
+  line-height: 1;
+  transition:
+    color var(--t-base) var(--e-out),
+    transform var(--t-base) var(--e-out);
+}
+
+.search-box input {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  appearance: none;
+}
+
+.search-box input::-webkit-search-cancel-button,
+.search-box input::-webkit-search-decoration {
+  appearance: none;
+}
+
+.search-box input:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 6px;
+}
+
+.search-shortcut {
+  display: none;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+@media (min-width: 641px) {
+  .search-box {
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+  }
+
+  .search-box input {
+    font-size: var(--step-3);
+  }
+
+  .search-shortcut {
+    display: inline-block;
+  }
+}

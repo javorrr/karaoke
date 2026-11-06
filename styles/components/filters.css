@@ -1,0 +1,137 @@
+/* ==========================================================================
+   SCENA — FILTERS
+   A printed index card: hard border, hard offset, three ruled fields.
+   ========================================================================== */
+
+.filters-panel {
+  position: relative;
+  display: grid;
+  gap: var(--space-lg);
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: var(--border-ink) solid var(--ink);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-stamp-sm);
+}
+
+.filters-panel::before {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  width: 0.6rem;
+  height: 0.6rem;
+  border: 1px solid var(--ink);
+  background: var(--pink);
+  content: "";
+}
+
+.filters-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.filters-title {
+  font-size: var(--step-2);
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: end;
+  gap: var(--space-md);
+}
+
+.filter-field {
+  display: grid;
+  min-width: 0;
+  gap: 0.35rem;
+}
+
+.filter-field > span {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.filter-field select {
+  width: 100%;
+  padding: 0.65rem 2.2rem 0.65rem 0.75rem;
+  border: var(--border-ink) solid var(--ink);
+  border-radius: var(--r-1);
+  background-color: var(--surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2314172E' stroke-width='1.6' stroke-linecap='square'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  background-size: 0.7rem;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  cursor: pointer;
+  appearance: none;
+  transition:
+    background-color var(--t-fast) var(--e-out),
+    border-color var(--t-fast) var(--e-out);
+}
+
+.filter-field select:hover {
+  background-color: var(--surface-sunken);
+}
+
+.filter-field select:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.filter-field select:disabled {
+  opacity: 0.5;
+}
+
+.reset-filters {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 0.65rem 1rem;
+  border: var(--border-ink) solid var(--ink);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition:
+    background-color var(--t-base) var(--e-out),
+    color var(--t-base) var(--e-out),
+    opacity var(--t-base) var(--e-out);
+}
+
+.reset-filters:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.reset-filters:disabled {
+  opacity: 0.42;
+}
+
+@media (min-width: 561px) {
+  .filters-panel {
+    box-shadow: var(--shadow-stamp);
+  }
+
+  .filters-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 901px) {
+  .filters-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  }
+
+  .reset-filters {
+    grid-column: auto;
+  }
+}

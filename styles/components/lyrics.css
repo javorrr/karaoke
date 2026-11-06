@@ -1,0 +1,56 @@
+/* ==========================================================================
+   SCENA — LYRICS
+   A karaoke teleprompter: phrases dim, the sung word gets a pink highlighter.
+   ========================================================================== */
+
+#lyrics-display::-webkit-scrollbar {
+  width: 6px;
+}
+
+#lyrics-display::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#lyrics-display::-webkit-scrollbar-thumb {
+  border-radius: var(--r-pill);
+  background: color-mix(in oklab, var(--cream) 26%, transparent);
+}
+
+.lyrics-phrase {
+  text-wrap: pretty;
+}
+
+.lyrics-phrase:has(.active) {
+  background: linear-gradient(90deg, var(--pink) 0 3px, transparent 3px);
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+
+.lyrics-phrase + .lyrics-phrase {
+  margin-block-start: 0.5rem;
+}
+
+/* The fallback text (no LRC) should read as a note, not a lyric. */
+#lyrics-display:not(:has(.lyrics-phrase)) {
+  border: 1px dashed var(--line-strong);
+  padding: var(--space-lg);
+  text-align: center;
+}
+
+.lyrics-hint {
+  display: none;
+}
+
+.lyrics-phrase {
+  line-height: 1.24;
+}
+
+@media (min-width: 561px) {
+  .lyrics-hint {
+    display: inline;
+  }
+
+  .lyrics-phrase {
+    line-height: 1.18;
+  }
+}

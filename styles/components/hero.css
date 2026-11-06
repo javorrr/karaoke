@@ -1,0 +1,35 @@
+/* ==========================================================================
+   SCENA — HERO
+   Hero-specific corrections layered over layout.css.
+   ========================================================================== */
+
+.intro h1 em {
+  /* Keep the italic display face from clipping its ascenders. */
+  padding-block: 0.04em;
+}
+
+.intro .eyebrow {
+  margin-block-end: var(--space-2xs);
+}
+
+.scroll-cue:focus-visible {
+  outline-offset: 5px;
+}
+
+.intro h1 {
+  font-size: clamp(3rem, 15vw, 4.6rem);
+}
+
+.intro-copy {
+  font-size: var(--step-0);
+}
+
+@media (min-width: 641px) {
+  .intro h1 {
+    font-size: var(--step-7);
+  }
+
+  .intro-copy {
+    font-size: var(--step-1);
+  }
+}
