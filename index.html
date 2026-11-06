@@ -5,43 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Aplikacja karaoke z wyszukiwaniem piosenek i odtwarzaczem">
   <title>Karaoke | Śpiewaj po swojemu</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/filters.css">
-  <link rel="stylesheet" href="css/recommendations.css">
+  <link rel="stylesheet" href="styles/app.css">
 </head>
 <body>
   <header class="site-header">
     <div class="container header-content">
       <a class="brand" href="./" aria-label="Karaoke - strona główna">
-        <span class="brand-mark" aria-hidden="true">♪</span>
-        <span>Karaoke</span>
+        <span class="brand-mark" aria-hidden="true">K</span>
+        <span class="brand-word">karaoke<span class="brand-dot">.</span></span>
       </a>
-      <span class="header-note"><span class="live-dot" aria-hidden="true"></span> Twój głos. Twój moment.</span>
+      <nav class="header-nav" aria-label="Główna nawigacja">
+        <a href="#songs-list">Biblioteka</a>
+        <a href="#recommendations">Na dziś</a>
+        <span class="header-note"><span class="live-dot" aria-hidden="true"></span> sesja otwarta</span>
+      </nav>
     </div>
   </header>
 
   <main class="container">
     <section id="library-view" class="library-view" aria-labelledby="library-title">
       <div class="hero-layout">
-        <div class="intro">
-          <p class="eyebrow">Biblioteka utworów / scena otwarta</p>
-          <h1 id="library-title">Wybierz coś<br><span>do zaśpiewania.</span></h1>
-          <p class="intro-copy">Znajdź piosenkę, złap rytm i przejmij mikrofon.</p>
+        <div class="hero-grid-mark" aria-hidden="true">
+          <span>01</span><i></i><span>04</span>
         </div>
-        <div class="hero-note" aria-hidden="true">
-          <span>♫</span>
-          <small>LIVE<br>SESSION</small>
+        <div class="intro">
+          <p class="eyebrow"><span class="eyebrow-line"></span> biblioteka / 2026</p>
+          <h1 id="library-title">Twój głos.<br><em>Twój moment.</em></h1>
+          <p class="intro-copy">Znajdź numer, który brzmi jak Ty. Wciśnij play i przejmij scenę.</p>
+          <a class="scroll-cue" href="#songs-list"><span class="scroll-cue-icon">↓</span> przewiń do repertuaru</a>
+        </div>
+        <div class="hero-signal" aria-hidden="true">
+          <span class="signal-label">ON AIR</span>
+          <span class="signal-ring"></span>
+          <span class="signal-ring signal-ring--inner"></span>
+          <span class="signal-cross signal-cross--one"></span>
+          <span class="signal-cross signal-cross--two"></span>
+          <span class="signal-caption">SOUND<br>CHECK</span>
         </div>
       </div>
 
       <label class="search-box" for="song-search">
-        <span class="search-icon" aria-hidden="true">⌕</span>
+        <span class="search-index">01</span>
+        <span class="search-icon" aria-hidden="true">↗</span>
         <span class="sr-only">Szukaj piosenki lub wykonawcy</span>
-        <input id="song-search" type="search" placeholder="Szukaj piosenki lub wykonawcy..." autocomplete="off" aria-label="Szukaj piosenki lub wykonawcy">
+        <input id="song-search" type="search" placeholder="Szukaj po tytule lub wykonawcy" autocomplete="off" aria-label="Szukaj piosenki lub wykonawcy">
+        <span class="search-shortcut">enter ↵</span>
       </label>
 
       <section class="filters-panel" aria-labelledby="filters-title">
-        <h2 id="filters-title" class="filters-title">Dopasuj repertuar</h2>
+        <div class="filters-heading">
+          <span class="section-index">02</span>
+          <h2 id="filters-title" class="filters-title">Dopasuj repertuar</h2>
+        </div>
         <div class="filters-grid">
           <label class="filter-field" for="genre-filter">
             <span>Gatunek</span>
@@ -62,7 +77,10 @@
       <div id="recommendations" class="recommendations" aria-label="Polecane i popularne piosenki"></div>
 
       <div class="list-heading">
-        <h2>Wszystkie piosenki</h2>
+        <div>
+          <span class="section-index">03</span>
+          <h2>Wszystkie piosenki</h2>
+        </div>
         <span id="song-count" class="song-count" aria-live="polite"></span>
       </div>
       <div id="songs-list" class="songs-list" aria-live="polite"></div>
@@ -70,18 +88,25 @@
     </section>
 
     <section id="player-view" class="player-view" hidden aria-labelledby="player-title">
-      <button id="back-button" class="back-button" type="button" aria-label="Wróć do listy piosenek">← Wróć do listy</button>
+      <div class="player-topline">
+        <button id="back-button" class="back-button" type="button" aria-label="Wróć do listy piosenek">← biblioteka</button>
+        <span><span class="live-dot" aria-hidden="true"></span> sesja odtwarzania</span>
+      </div>
       <div class="player-panel">
-        <div class="player-art" aria-hidden="true">♫</div>
+        <div class="player-art" aria-hidden="true">
+          <span class="player-art-label">NOW<br>PLAYING</span>
+          <span class="player-art-number">04</span>
+          <span class="player-art-wave"></span>
+        </div>
         <div class="player-details">
-          <p class="eyebrow">Teraz grasz</p>
+          <p class="eyebrow"><span class="eyebrow-line"></span> teraz grasz</p>
           <h1 id="player-title">-</h1>
           <p id="player-artist" class="player-artist">-</p>
           <p id="player-error" class="player-error" role="alert"></p>
           <div class="player-controls">
             <div class="transport-controls">
               <button id="seek-back" class="secondary-button" type="button" aria-label="Przewiń 10 sekund do tyłu">−10 s</button>
-              <button id="play-button" class="play-button" type="button" aria-label="Odtwórz piosenkę">▶ <span>Play</span></button>
+              <button id="play-button" class="play-button" type="button" aria-label="Odtwórz piosenkę"><span class="play-glyph" aria-hidden="true"></span><span>Play</span></button>
               <button id="seek-forward" class="secondary-button" type="button" aria-label="Przewiń 10 sekund do przodu">+10 s</button>
             </div>
             <div class="timeline">
@@ -90,7 +115,7 @@
             </div>
             <div class="mixer-controls">
               <div class="volume-control">
-                <button id="mute-button" class="icon-button" type="button" aria-label="Wycisz dźwięk" aria-pressed="false">🔊</button>
+                <button id="mute-button" class="icon-button" type="button" aria-label="Wycisz dźwięk" aria-pressed="false">sound</button>
                 <input id="volume-slider" type="range" min="0" max="1" value="1" step="0.01" aria-label="Głośność">
               </div>
               <label class="select-control" for="speed-select">
@@ -113,7 +138,7 @@
       </div>
       <section class="lyrics-container" aria-labelledby="lyrics-title">
         <div class="lyrics-heading">
-          <h2 id="lyrics-title">Tekst piosenki</h2>
+          <div><span class="section-index">04</span><h2 id="lyrics-title">Tekst piosenki</h2></div>
           <span class="lyrics-hint">Kliknij wers, aby przewinąć</span>
         </div>
         <div id="lyrics-display" aria-live="polite"></div>

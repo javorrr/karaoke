@@ -66,13 +66,15 @@ export function createPlayer(elements) {
   );
 
   const setPlayingState = (isPlaying) => {
-    elements.playButton.innerHTML = isPlaying ? '❚❚ <span>Pause</span>' : '▶ <span>Play</span>';
+    elements.playButton.innerHTML = isPlaying
+      ? '<span class="pause-glyph" aria-hidden="true"></span><span>Pause</span>'
+      : '<span class="play-glyph" aria-hidden="true"></span><span>Play</span>';
     elements.playButton.setAttribute('aria-label', isPlaying ? 'Wstrzymaj piosenkę' : 'Odtwórz piosenkę');
   };
 
   const updateMuteUi = () => {
     const effectivelyMuted = muted || volume === 0;
-    const icon = effectivelyMuted ? '🔇' : (volume < 0.5 ? '🔈' : '🔊');
+    const icon = effectivelyMuted ? 'muted' : 'sound';
 
     elements.muteButton.textContent = icon;
     elements.muteButton.setAttribute('aria-pressed', String(muted));
