@@ -146,7 +146,7 @@ export function createLyrics(display, { onSeek } = {}) {
     });
   }
 
-  async function load(url) {
+  async function load(url, song) {
     loadId += 1;
     const currentLoadId = loadId;
 
@@ -156,16 +156,26 @@ export function createLyrics(display, { onSeek } = {}) {
     activeTime = null;
     display.replaceChildren();
 
-    if (!url) {
-      display.textContent = 'Brak tekstu tej piosenki.';
-      return;
-    }
-
     try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('Brak pliku LRC');
+      let content = '';
 
-      const content = await response.text();
+      if (url) {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Brak pliku LRC');
+        content = await response.text();
+      } else if (song?.title) {
+        const params = new URLSearchParams({
+          title: song.title,
+          artist: song.artist || ''
+        });
+        const response = await fetch(`api/lyrics.php?${params}`);
+        if (!response.ok) throw new Error('Brak tekstu LRCLIB');
+        const data = await response.json();
+        content = data.lyrics || '';
+      } else {
+        throw new Error('Brak danych piosenki');
+      }
+
       if (currentLoadId !== loadId) return;
 
       lines = parseLRC(content);

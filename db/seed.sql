@@ -8,10 +8,15 @@ VALUES (
     'Last Christmas',
     'Wham!',
     'songs/audio/last-christmas.mp3',
-    'songs/lrc/last-christmas.lrc'
+    NULL
 ), (
     'W sumie nie jest źle',
     'Maryla Rodowicz',
     'songs/audio/w-sumie-nie-jest-zle.mp3',
-    'songs/lrc/w-sumie-nie-jest-zle.lrc'
+    NULL
+), (
+    'Temperatura',
+    'SKOLIM',
+    'songs/audio/SKOLIM - Temperatura (Official Video) - SKOLIM Official.mp3',
+    NULL
 );

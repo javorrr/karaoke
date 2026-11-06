@@ -319,7 +319,7 @@ export function createPlayer(elements) {
       audio.load();
       audio.playbackRate = Number(elements.speedSelect.value) || 1;
 
-      lyrics.load(song.lrc_url).then(() => {
+      lyrics.load(song.lrc_url, song).then(() => {
         if (currentLyricsLoadId !== lyricsLoadId) return;
         lyrics.setDuration(getDuration());
         lyrics.update(0);
