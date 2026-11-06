@@ -205,7 +205,7 @@ body:has(#player-view:not([hidden])) .site-header {
 .intro h1 em::after {
   position: absolute;
   inset-inline: 0.02em;
-  bottom: 0.14em;
+  bottom: 0.06em;
   height: 0.07em;
   background: linear-gradient(90deg, var(--pink) 0 92%, transparent 92% 100%);
   transform: rotate(-1.2deg);
@@ -245,12 +245,11 @@ body:has(#player-view:not([hidden])) .site-header {
 
 .scroll-cue-icon {
   display: inline-grid;
-  width: 1.6rem;
-  height: 1.6rem;
+  width: 1.25em;
+  height: 1.25em;
   place-items: center;
-  border: 1px solid var(--line-strong);
-  border-radius: 50%;
-  font-size: 0.9em;
+  font-size: 1.15em;
+  line-height: 1;
 }
 
 /* ---- Signal mark ------------------------------------------------------- */
@@ -282,22 +281,6 @@ body:has(#player-view:not([hidden])) .site-header {
   background: var(--pink);
   box-shadow: 0 0 0 0.35rem color-mix(in oklab, var(--pink) 18%, transparent);
   content: "";
-}
-
-.signal-label {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  padding: 0.3rem 0.6rem;
-  border: 1.5px solid var(--ink);
-  background: var(--pink);
-  box-shadow: var(--shadow-stamp-sm);
-  color: var(--ink);
-  font-family: var(--font-mono);
-  font-size: var(--step--2);
-  letter-spacing: 0.12em;
-  transform: rotate(-3deg);
 }
 
 .signal-ring {

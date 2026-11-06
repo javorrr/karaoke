@@ -12,12 +12,13 @@ const listStatus = document.querySelector('#list-status');
 const songCount = document.querySelector('#song-count');
 const searchInput = document.querySelector('#song-search');
 const playerError = document.querySelector('#player-error');
+let allSongs = [];
 let loadedSongs = [];
 let recommendations;
 
 const popularity = createPopularityStore(() => {
   if (recommendations) {
-    recommendations.setSongs(loadedSongs);
+    recommendations.setSongs(allSongs);
   }
 });
 
@@ -37,12 +38,18 @@ const player = createPlayer({
   followLyrics: document.querySelector('#lyrics-follow')
 });
 
+function findCanonicalSong(song) {
+  return allSongs.find((candidate) => candidate.id === song.id) ?? song;
+}
+
 function showPlayer(song) {
+  const canonicalSong = findCanonicalSong(song);
+
   playerError.textContent = '';
-  popularity.record(song).catch((error) => {
+  popularity.record(canonicalSong).catch((error) => {
     playerError.textContent = error.message;
   });
-  player.load(song);
+  player.load(canonicalSong);
   libraryView.hidden = true;
   playerView.hidden = false;
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -109,14 +116,28 @@ const songFilters = createSongFilters({
 async function loadSongs(query = '') {
   listStatus.textContent = 'Ładowanie piosenek...';
   try {
-    loadedSongs = await fetchSongs(query);
+    const results = await fetchSongs(query);
+
+    if (query === '') {
+      allSongs = results;
+      loadedSongs = results;
+      recommendations.setSongs(allSongs);
+    } else {
+      // Search narrows the setlist only; recommendations and the popular chart
+      // stay anchored to the complete library and its canonical song objects.
+      loadedSongs = results.map(findCanonicalSong);
+    }
+
     songFilters.setSongs(loadedSongs);
-    recommendations.setSongs(loadedSongs);
     renderSongs(songFilters.getFilteredSongs());
   } catch (error) {
+    if (query === '') {
+      allSongs = [];
+      recommendations.setSongs(allSongs);
+    }
+
     loadedSongs = [];
     songFilters.setSongs(loadedSongs);
-    recommendations.setSongs(loadedSongs);
     songCount.textContent = '';
     songsList.replaceChildren();
     listStatus.textContent = error.message;

@@ -92,24 +92,13 @@
   text-transform: uppercase;
 }
 
-.recommendation-song-note {
-  display: block;
-  margin-block-start: 0.4rem;
-  padding-block-start: 0.4rem;
-  border-top: 1px dashed var(--line-strong);
-  color: var(--pink-ink);
-  font-family: var(--font-accent);
-  font-size: var(--step-1);
-  font-style: italic;
-  line-height: 1.2;
-}
-
 /* ---- Chart ------------------------------------------------------------- */
 .popular-list {
   border-top: var(--border-ink) solid var(--ink);
 }
 
 .popular-song {
+  position: relative;
   display: grid;
   grid-template-areas:
     "rank details button"
@@ -122,8 +111,27 @@
   transition: background-color var(--t-base) var(--e-out);
 }
 
-.popular-song:hover {
+.popular-song::before {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: -0.4rem;
+  width: 4px;
+  background: var(--pink);
+  content: "";
+  opacity: 0;
+  transition: opacity var(--t-base) var(--e-out);
+}
+
+.popular-song:focus-within {
   background: color-mix(in oklab, var(--pink) 7%, transparent);
+}
+
+.popular-song:focus-within::before {
+  opacity: 1;
+}
+
+.popular-song:focus-within .popular-details strong {
+  transform: translateX(4px);
 }
 
 .popular-rank {
@@ -156,6 +164,7 @@
   letter-spacing: -0.01em;
   line-height: 1.15;
   overflow-wrap: anywhere;
+  transition: transform var(--t-base) var(--e-out);
 }
 
 .popular-details span {
@@ -194,6 +203,26 @@
 .popular-sing-button:hover {
   background: var(--cobalt);
   color: var(--cream);
+}
+
+@media (hover: hover) {
+  .popular-song:hover {
+    background: color-mix(in oklab, var(--pink) 7%, transparent);
+  }
+
+  .popular-song:hover::before {
+    opacity: 1;
+  }
+
+  .popular-song:hover .popular-details strong {
+    transform: translateX(4px);
+  }
+
+  .popular-song:hover .popular-sing-button {
+    border-color: var(--cobalt);
+    background: var(--cobalt);
+    color: var(--cream);
+  }
 }
 
 @media (min-width: 641px) {

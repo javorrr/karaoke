@@ -10,6 +10,7 @@ const setRange = (page, selector, value) =>
 
 test.describe('player', () => {
   test('loads the song, duration and synced lyrics', async ({ page }) => {
+    await gotoLibrary(page);
     await openPlayer(page);
 
     await expect(page.locator('#player-title')).toHaveText('Last Christmas');
@@ -27,6 +28,7 @@ test.describe('player', () => {
   test('toggles play and pause through the glyph, label and clock', async ({
     page,
   }) => {
+    await gotoLibrary(page);
     await openPlayer(page);
 
     await page.locator('#play-button').click();
@@ -56,6 +58,7 @@ test.describe('player', () => {
   test('seeks ten seconds in both directions and clamps at the start', async ({
     page,
   }) => {
+    await gotoLibrary(page);
     await openPlayer(page);
 
     await page.locator('#seek-forward').click();
@@ -74,6 +77,7 @@ test.describe('player', () => {
   test('moves the timeline, progress paint and active lyric together', async ({
     page,
   }) => {
+    await gotoLibrary(page);
     await openPlayer(page);
 
     await setRange(page, '#progress-slider', 5.4);
@@ -95,6 +99,7 @@ test.describe('player', () => {
   });
 
   test('treats every timed lyric as a seek control', async ({ page }) => {
+    await gotoLibrary(page);
     await openPlayer(page);
 
     await page.locator('.lyrics-line').nth(2).click();
@@ -109,6 +114,7 @@ test.describe('player', () => {
   });
 
   test('mutes, unmutes and recovers from a zero volume', async ({ page }) => {
+    await gotoLibrary(page);
     await openPlayer(page);
 
     const mute = page.locator('#mute-button');
@@ -147,6 +153,7 @@ test.describe('player', () => {
   test('persists volume, speed and follow preferences across reloads', async ({
     page,
   }) => {
+    await gotoLibrary(page);
     await openPlayer(page);
 
     await setRange(page, '#volume-slider', 0.35);
@@ -183,6 +190,11 @@ test.describe('player', () => {
     expect(library.color).toBe('rgb(20, 23, 46)');
 
     await openPlayer(page);
+    await expect
+      .poll(() =>
+        page.evaluate(() => getComputedStyle(document.body).backgroundColor)
+      )
+      .toBe('rgb(11, 16, 38)');
 
     const stage = await page.evaluate(() => ({
       background: getComputedStyle(document.body).backgroundColor,
@@ -229,6 +241,7 @@ test.describe('player', () => {
   test('stops playback on back and starts the next visit paused', async ({
     page,
   }) => {
+    await gotoLibrary(page);
     await openPlayer(page);
     await page.locator('#play-button').click();
     await expect(page.locator('.pause-glyph')).toBeVisible();

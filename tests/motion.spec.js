@@ -41,6 +41,7 @@ test.describe('reduced motion', () => {
   test('suppresses the player entrance and the playing glow', async ({
     page,
   }) => {
+    await gotoLibrary(page);
     await openPlayer(page);
 
     const entrance = await page.evaluate(() => {
@@ -91,6 +92,7 @@ test.describe('full motion', () => {
   test('stamps the player in and lights the playing state', async ({
     page,
   }) => {
+    await gotoLibrary(page);
     await openPlayer(page);
 
     const entrance = await page.evaluate(() => {
@@ -108,6 +110,15 @@ test.describe('full motion', () => {
     expect(seconds(entrance.panelTransition)).toBeGreaterThan(0.1);
 
     await page.locator('#play-button').click();
+    await expect(page.locator('.pause-glyph')).toBeVisible();
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            getComputedStyle(document.querySelector('.play-button')).animationName
+        )
+      )
+      .toBe('play-glow');
 
     const playing = await page.evaluate(() => {
       const button = getComputedStyle(document.querySelector('.play-button'));

@@ -12,9 +12,9 @@ test.describe('keyboard', () => {
     const skipLink = page.locator('.skip-link');
     await expect(skipLink).toBeFocused();
 
-    const box = await skipLink.boundingBox();
-    expect(box).not.toBeNull();
-    expect(box.y).toBeGreaterThanOrEqual(0);
+    await expect
+      .poll(async () => (await skipLink.boundingBox())?.y ?? -Infinity)
+      .toBeGreaterThanOrEqual(0);
 
     await page.keyboard.press('Enter');
 
@@ -41,6 +41,7 @@ test.describe('keyboard', () => {
   });
 
   test('seeks from a lyric with Enter and Space', async ({ page }) => {
+    await gotoLibrary(page);
     await openPlayer(page);
 
     await page.locator('.lyrics-line').nth(2).focus();
@@ -57,6 +58,7 @@ test.describe('keyboard', () => {
   test('supports Home and End on the timeline and volume sliders', async ({
     page,
   }) => {
+    await gotoLibrary(page);
     await openPlayer(page);
 
     await page.locator('#progress-slider').focus();
@@ -96,6 +98,7 @@ test.describe('keyboard', () => {
   test('shows a visible focus ring on the player transport', async ({
     page,
   }) => {
+    await gotoLibrary(page);
     await openPlayer(page);
 
     await page.locator('#back-button').focus();
@@ -121,6 +124,7 @@ test.describe('keyboard', () => {
   test('returns to the library from the back button with the keyboard', async ({
     page,
   }) => {
+    await gotoLibrary(page);
     await openPlayer(page);
 
     await page.locator('#back-button').focus();

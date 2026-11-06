@@ -1,12 +1,7 @@
 const MAX_RECOMMENDED_SONGS = 3;
 const MAX_POPULAR_SONGS = 5;
-const RECOMMENDATION_NOTES = [
-  'Dobry wybór na początek',
-  'Na wieczorny nastrój',
-  'Rozkręca każdą imprezę'
-];
 
-function createSongButton(song, className, onSelect, note) {
+function createSongButton(song, className, onSelect) {
   const button = document.createElement('button');
   button.className = className;
   button.type = 'button';
@@ -17,13 +12,7 @@ function createSongButton(song, className, onSelect, note) {
   artist.className = 'recommendation-song-artist';
   artist.textContent = song.artist;
   button.append(title, document.createTextNode(' '), artist);
-  if (note) {
-    const noteElement = document.createElement('span');
-    noteElement.className = 'recommendation-song-note';
-    noteElement.textContent = note;
-    button.append(document.createTextNode(' '), noteElement);
-  }
-  button.setAttribute('aria-label', `Śpiewaj: ${song.title} - ${song.artist}${note ? ` — ${note}` : ''}`);
+  button.setAttribute('aria-label', `Śpiewaj: ${song.title} - ${song.artist}`);
   button.addEventListener('click', () => onSelect(song));
   return button;
 }
@@ -70,12 +59,7 @@ export function createRecommendations({ container, onSelect, getPlayCount }) {
       const sortedSongs = [...songsWithCounts].sort((first, second) =>
         second.playCount - first.playCount || first.index - second.index
       );
-      const recommendedSongs = sortedSongs
-        .slice(0, MAX_RECOMMENDED_SONGS)
-        .map(({ song }, index) => ({
-          song,
-          note: RECOMMENDATION_NOTES[index]
-        }));
+      const recommendedSongs = sortedSongs.slice(0, MAX_RECOMMENDED_SONGS);
       const popularSongs = sortedSongs.slice(0, MAX_POPULAR_SONGS);
 
       container.replaceChildren();
@@ -93,8 +77,8 @@ export function createRecommendations({ container, onSelect, getPlayCount }) {
       recommendedTitle.textContent = 'Polecane piosenki';
       const recommendedList = document.createElement('div');
       recommendedList.className = 'recommended-list';
-      recommendedSongs.forEach(({ song, note }) => {
-        recommendedList.append(createSongButton(song, 'recommended-song', onSelect, note));
+      recommendedSongs.forEach(({ song }) => {
+        recommendedList.append(createSongButton(song, 'recommended-song', onSelect));
       });
       recommendedSection.append(recommendedTitle, recommendedList);
 

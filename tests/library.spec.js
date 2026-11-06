@@ -30,11 +30,18 @@ test.describe('library', () => {
   }) => {
     await gotoLibrary(page);
 
+    const popularBefore = await page
+      .locator('.popular-details strong')
+      .allTextContents();
+
     await page.locator('#song-search').fill('temperatura');
 
     await expect(page.locator('#songs-list .song-row')).toHaveCount(1);
     await expect(page.locator('.song-title')).toHaveText('Temperatura');
     await expect(page.locator('#song-count')).toHaveText('1 piosenka');
+    await expect(page.locator('.popular-details strong')).toHaveText(
+      popularBefore
+    );
 
     await page.locator('#song-search').fill('');
 
@@ -104,13 +111,6 @@ test.describe('library', () => {
 
     await expect(page.locator('.recommended-song .recommendation-song-title'))
       .toHaveText(sorted.map((song) => song.title));
-    await expect(
-      page.locator('.recommended-song .recommendation-song-note')
-    ).toHaveText([
-      'Dobry wybór na początek',
-      'Na wieczorny nastrój',
-      'Rozkręca każdą imprezę',
-    ]);
 
     await expect(page.locator('.popular-rank')).toHaveText(['1', '2', '3']);
     await expect(page.locator('.popular-plays')).toHaveText(
@@ -124,6 +124,40 @@ test.describe('library', () => {
     await expect(page.locator('#popular-title')).toHaveText(
       'Najchętniej śpiewane'
     );
+  });
+
+  test('gives the popular chart the same hover treatment as the setlist', async ({
+    page,
+    hasTouch,
+  }) => {
+    test.skip(hasTouch, 'hover states require a hover-capable pointer');
+
+    await gotoLibrary(page);
+
+    const row = page.locator('.popular-song').first();
+    await row.hover();
+
+    await expect
+      .poll(() =>
+        row.evaluate(
+          (element) => getComputedStyle(element, '::before').opacity
+        )
+      )
+      .toBe('1');
+
+    const hover = await row.evaluate((element) => ({
+      background: getComputedStyle(element).backgroundColor,
+      titleTransform: getComputedStyle(
+        element.querySelector('.popular-details strong')
+      ).transform,
+      buttonBackground: getComputedStyle(
+        element.querySelector('.popular-sing-button')
+      ).backgroundColor,
+    }));
+
+    expect(hover.background).not.toBe('rgba(0, 0, 0, 0)');
+    expect(hover.titleTransform).not.toBe('none');
+    expect(hover.buttonBackground).toBe('rgb(27, 42, 107)');
   });
 
   test('opens the player from a setlist row and returns', async ({ page }) => {

@@ -22,7 +22,6 @@
     "popular-song",
     "recommendation-group",
     "recommendation-song-artist",
-    "recommendation-song-note",
     "recommendation-song-title",
     "recommendations",
     "recommended-list",
@@ -39,7 +38,6 @@
     "signal-cross",
     "signal-cross--one",
     "signal-cross--two",
-    "signal-label",
     "signal-ring",
     "signal-ring--inner",
     "sing-button",
@@ -149,7 +147,7 @@
     "data-time"
   ],
   "counts": {
-    "classes": 91,
+    "classes": 89,
     "ids": 31,
     "aria": 7,
     "data": 2
