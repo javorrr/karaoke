@@ -63,8 +63,19 @@ main:focus {
   .hero-signal::before,
   .hero-signal::after,
   .player-panel::before,
-  .player-art-wave {
+  .player-panel::after,
+  .player-art-wave,
+  .recommended-song::before {
     display: none;
+  }
+
+  html.motion-ready [data-reveal],
+  .search-box,
+  .filters-panel,
+  .list-heading {
+    opacity: 1;
+    translate: none;
+    animation: none !important;
   }
 
   * {
@@ -160,6 +171,15 @@ main:focus {
 
   .intro h1 {
     font-size: 28pt;
+  }
+
+  html.motion-ready [data-reveal],
+  .search-box,
+  .filters-panel,
+  .list-heading {
+    opacity: 1;
+    translate: none;
+    animation: none !important;
   }
 
   .song-row {

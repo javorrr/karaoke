@@ -54,6 +54,11 @@
   font-size: var(--step--2);
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  transition: color var(--t-base) var(--e-out);
+}
+
+.filter-field:focus-within > span {
+  color: var(--pink-ink);
 }
 
 .filter-field select {
@@ -104,12 +109,17 @@
   transition:
     background-color var(--t-base) var(--e-out),
     color var(--t-base) var(--e-out),
-    opacity var(--t-base) var(--e-out);
+    opacity var(--t-base) var(--e-out),
+    translate var(--t-fast) var(--e-out);
 }
 
 .reset-filters:hover:not(:disabled) {
   background: var(--ink);
   color: var(--paper);
+}
+
+.reset-filters:active:not(:disabled) {
+  translate: 0 1px;
 }
 
 .reset-filters:disabled {

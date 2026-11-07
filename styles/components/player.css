@@ -109,6 +109,7 @@
   inset: 12%;
   border: 1px dashed color-mix(in oklab, var(--cream) 22%, transparent);
   border-radius: 50%;
+  transform-origin: center;
   content: "";
 }
 
@@ -117,6 +118,7 @@
   inset: 22%;
   border: 1px solid color-mix(in oklab, var(--pink) 52%, transparent);
   border-radius: 50%;
+  transform-origin: center;
   content: "";
 }
 
@@ -225,7 +227,7 @@
   transition:
     background-color var(--t-base) var(--e-out),
     box-shadow var(--t-base) var(--e-out),
-    transform var(--t-fast) var(--e-out);
+    scale var(--t-fast) var(--e-out);
 }
 
 .play-button:hover {
@@ -233,16 +235,18 @@
   box-shadow:
     0 0 0 1px var(--cream),
     0 12px 44px -10px var(--pink);
+  scale: 1.02;
 }
 
 .play-button:active {
-  transform: scale(0.97);
+  scale: 0.97;
 }
 
 .play-glyph,
 .pause-glyph {
   display: inline-block;
   flex: 0 0 auto;
+  transform-origin: center;
 }
 
 .play-glyph {
@@ -469,6 +473,11 @@
   font-size: var(--step--2);
   cursor: pointer;
   appearance: none;
+  transition: border-color var(--t-base) var(--e-out);
+}
+
+.select-control select:hover {
+  border-color: var(--pink);
 }
 
 .toggle-control {
@@ -507,7 +516,7 @@
   border-radius: 50%;
   background: var(--cream);
   transform: translateY(-50%);
-  transition: transform var(--t-base) var(--e-out);
+  transition: transform var(--t-base) var(--e-stamp);
   content: "";
 }
 

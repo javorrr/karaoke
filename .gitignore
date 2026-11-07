@@ -4,3 +4,5 @@ playwright-report/
 .artifacts/
 *.actual.png
 *.diff.png
+tests/
+.gitignorechd/

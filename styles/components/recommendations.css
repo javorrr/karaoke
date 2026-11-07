@@ -51,6 +51,20 @@
     background-color var(--t-base) var(--e-out);
 }
 
+.recommended-song::before {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    14rem circle at var(--glow-x) var(--glow-y),
+    color-mix(in oklab, var(--pink) 18%, transparent),
+    transparent 68%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-base) var(--e-out);
+  content: "";
+}
+
 .recommended-song::after {
   position: absolute;
   top: -1.5px;
@@ -61,15 +75,24 @@
   content: "";
 }
 
-.recommended-song:hover {
+.recommended-song:hover,
+.recommended-song:focus-visible {
   background: var(--surface);
   box-shadow: 6px 6px 0 var(--shadow-color);
-  transform: translate(-2px, -2px);
+  transform: translate(-2px, -2px) perspective(44rem)
+    rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transform-style: preserve-3d;
+}
+
+.recommended-song:hover::before,
+.recommended-song:focus-visible::before {
+  opacity: 1;
 }
 
 .recommended-song:active {
   box-shadow: 1px 1px 0 var(--shadow-color);
-  transform: translate(1px, 1px);
+  transform: translate(1px, 1px) perspective(44rem)
+    rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
 }
 
 .recommendation-song-title {
@@ -119,9 +142,13 @@
   inset-inline-start: -0.9rem;
   width: 4px;
   background: var(--pink);
+  transform: scaleY(0);
+  transform-origin: center;
   content: "";
   opacity: 0;
-  transition: opacity var(--t-base) var(--e-out);
+  transition:
+    opacity var(--t-base) var(--e-out),
+    transform var(--t-base) var(--e-out);
 }
 
 .popular-song:focus-within {
@@ -130,11 +157,17 @@
 }
 
 .popular-song:focus-within::before {
+  transform: scaleY(1);
   opacity: 1;
 }
 
 .popular-song:focus-within .popular-details strong {
   transform: translateX(4px);
+}
+
+.popular-song:focus-within .popular-rank {
+  -webkit-text-stroke-color: var(--pink-ink);
+  translate: 2px 0;
 }
 
 .popular-rank {
@@ -146,6 +179,9 @@
   font-weight: 700;
   line-height: 0.8;
   -webkit-text-stroke: 1.5px var(--ink);
+  transition:
+    -webkit-text-stroke-color var(--t-base) var(--e-out),
+    translate var(--t-base) var(--e-out);
 }
 
 @supports not (-webkit-text-stroke: 1px currentColor) {
@@ -200,12 +236,22 @@
   text-transform: uppercase;
   transition:
     background-color var(--t-base) var(--e-out),
-    color var(--t-base) var(--e-out);
+    color var(--t-base) var(--e-out),
+    scale var(--t-fast) var(--e-out);
+}
+
+.popular-sing-button:hover,
+.popular-sing-button:focus-visible {
+  background: var(--cobalt);
+  color: var(--cream);
 }
 
 .popular-sing-button:hover {
-  background: var(--cobalt);
-  color: var(--cream);
+  scale: 1.03;
+}
+
+.popular-sing-button:active {
+  scale: 0.97;
 }
 
 @media (hover: hover) {
@@ -215,6 +261,7 @@
   }
 
   .popular-song:hover::before {
+    transform: scaleY(1);
     opacity: 1;
   }
 
@@ -222,10 +269,16 @@
     transform: translateX(4px);
   }
 
+  .popular-song:hover .popular-rank {
+    -webkit-text-stroke-color: var(--pink-ink);
+    translate: 2px 0;
+  }
+
   .popular-song:hover .popular-sing-button {
     border-color: var(--cobalt);
     background: var(--cobalt);
     color: var(--cream);
+    scale: 1.03;
   }
 }
 

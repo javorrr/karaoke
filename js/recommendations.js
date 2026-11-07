@@ -1,3 +1,5 @@
+import { clearReveals, reveal } from './motion.js';
+
 const MAX_RECOMMENDED_SONGS = 3;
 const MAX_POPULAR_SONGS = 5;
 
@@ -62,6 +64,7 @@ export function createRecommendations({ container, onSelect, getPlayCount }) {
       const recommendedSongs = sortedSongs.slice(0, MAX_RECOMMENDED_SONGS);
       const popularSongs = sortedSongs.slice(0, MAX_POPULAR_SONGS);
 
+      clearReveals(container);
       container.replaceChildren();
       if (recommendedSongs.length === 0 && popularSongs.length === 0) {
         container.hidden = true;
@@ -96,6 +99,7 @@ export function createRecommendations({ container, onSelect, getPlayCount }) {
       popularSection.append(popularTitle, popularList);
 
       container.append(recommendedSection, popularSection);
+      reveal(container.querySelectorAll('.recommended-song, .popular-song'));
     }
   };
 }

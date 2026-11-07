@@ -1,3 +1,5 @@
+const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
 export function createLyrics(display, { onSeek } = {}) {
   let lines = [];
   let lineElements = [];
@@ -98,7 +100,7 @@ export function createLyrics(display, { onSeek } = {}) {
 
     display.scrollTo({
       top: Math.max(0, target),
-      behavior: 'smooth'
+      behavior: reduceMotionQuery.matches ? 'auto' : 'smooth'
     });
   }
 
@@ -106,9 +108,13 @@ export function createLyrics(display, { onSeek } = {}) {
     display.replaceChildren();
     lineElements = [];
 
-    groupIntoPhrases(lines).forEach(phraseLines => {
+    groupIntoPhrases(lines).forEach((phraseLines, phraseIndex) => {
       const phrase = document.createElement('div');
       phrase.className = 'lyrics-phrase';
+      phrase.style.setProperty(
+        '--phrase-index',
+        String(Math.min(phraseIndex, 12))
+      );
 
       phraseLines.forEach(line => {
         const word = document.createElement('span');

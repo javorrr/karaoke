@@ -4,6 +4,13 @@ import { createPlayer } from './player.js';
 import { createSongFilters } from './filters.js';
 import { createRecommendations } from './recommendations.js';
 import { createPopularityStore } from './popularity.js';
+import {
+  clearReveals,
+  enableCardTilt,
+  enableHeroParallax,
+  reveal,
+  withViewTransition
+} from './motion.js';
 
 const libraryView = document.querySelector('#library-view');
 const playerView = document.querySelector('#player-view');
@@ -50,15 +57,22 @@ function showPlayer(song) {
     playerError.textContent = error.message;
   });
   player.load(canonicalSong);
-  libraryView.hidden = true;
-  playerView.hidden = false;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  withViewTransition(() => {
+    libraryView.hidden = true;
+    playerView.hidden = false;
+    // The new view must be captured at the top; the view transition supplies
+    // the visual continuity, while reduced-motion users get an instant jump.
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  });
 }
 
 function showLibrary() {
   player.stop();
-  playerView.hidden = true;
-  libraryView.hidden = false;
+  withViewTransition(() => {
+    playerView.hidden = true;
+    libraryView.hidden = false;
+  });
 }
 
 recommendations = createRecommendations({
@@ -68,14 +82,17 @@ recommendations = createRecommendations({
 });
 
 function renderSongs(songs) {
+  clearReveals(songsList);
   songsList.replaceChildren();
   songCount.textContent = `${songs.length} ${songs.length === 1 ? 'piosenka' : 'piosenek'}`;
 
   if (songs.length === 0) {
+    listStatus.dataset.state = 'empty';
     listStatus.textContent = 'Nie znaleziono piosenek';
     return;
   }
 
+  delete listStatus.dataset.state;
   listStatus.textContent = '';
   songs.forEach((song) => {
     const row = document.createElement('article');
@@ -101,6 +118,8 @@ function renderSongs(songs) {
     row.append(info, button);
     songsList.append(row);
   });
+
+  reveal(songsList.querySelectorAll('.song-row'));
 }
 
 const songFilters = createSongFilters({
@@ -114,6 +133,8 @@ const songFilters = createSongFilters({
 });
 
 async function loadSongs(query = '') {
+  songsList.setAttribute('aria-busy', 'true');
+  listStatus.dataset.state = 'loading';
   listStatus.textContent = 'Ładowanie piosenek...';
   try {
     const results = await fetchSongs(query);
@@ -139,11 +160,17 @@ async function loadSongs(query = '') {
     loadedSongs = [];
     songFilters.setSongs(loadedSongs);
     songCount.textContent = '';
+    clearReveals(songsList);
     songsList.replaceChildren();
+    listStatus.dataset.state = 'error';
     listStatus.textContent = error.message;
+  } finally {
+    songsList.removeAttribute('aria-busy');
   }
 }
 
 setupSearch(searchInput, loadSongs);
 document.querySelector('#back-button').addEventListener('click', showLibrary);
+enableHeroParallax();
+enableCardTilt();
 loadSongs();

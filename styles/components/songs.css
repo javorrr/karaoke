@@ -34,9 +34,13 @@
   inset-inline-start: -0.6rem;
   width: 4px;
   background: var(--pink);
+  transform: scaleY(0);
+  transform-origin: center;
   content: "";
   opacity: 0;
-  transition: opacity var(--t-base) var(--e-out);
+  transition:
+    opacity var(--t-base) var(--e-out),
+    transform var(--t-base) var(--e-out);
 }
 
 .song-row::before {
@@ -48,6 +52,7 @@
   font-size: var(--step--1);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.08em;
+  transition: color var(--t-base) var(--e-out);
   content: counter(track, decimal-leading-zero);
   counter-increment: track;
 }
@@ -93,6 +98,7 @@
     background-color var(--t-base) var(--e-out),
     border-color var(--t-base) var(--e-out),
     color var(--t-base) var(--e-out),
+    scale var(--t-fast) var(--e-out),
     transform var(--t-fast) var(--e-out);
 }
 
@@ -108,7 +114,14 @@
 }
 
 .sing-button:active {
+  scale: 0.97;
   transform: translateY(1px);
+}
+
+.sing-button:focus-visible {
+  border-color: var(--cobalt);
+  background: var(--cobalt);
+  color: var(--cream);
 }
 
 .song-row:focus-within {
@@ -117,7 +130,12 @@
 }
 
 .song-row:focus-within::after {
+  transform: scaleY(1);
   opacity: 1;
+}
+
+.song-row:focus-within::before {
+  color: var(--pink-ink);
 }
 
 .song-row:focus-within .song-title {
@@ -131,7 +149,12 @@
   }
 
   .song-row:hover::after {
+    transform: scaleY(1);
     opacity: 1;
+  }
+
+  .song-row:hover::before {
+    color: var(--pink-ink);
   }
 
   .song-row:hover .song-title {
@@ -142,6 +165,7 @@
     border-color: var(--cobalt);
     background: var(--cobalt);
     color: var(--cream);
+    scale: 1.02;
   }
 }
 

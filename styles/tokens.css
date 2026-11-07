@@ -120,6 +120,18 @@
   --t-enter: 600ms;
   --t-hero: 900ms;
   --stagger: 60ms;
+  --t-reveal: 560ms;
+  --stagger-reveal: 42ms;
+
+  /* Runtime motion values set by js/motion.js. */
+  --hero-px: 0px;
+  --hero-py: 0px;
+  --reveal-index: 0;
+  --phrase-index: 0;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --glow-x: 50%;
+  --glow-y: 50%;
 
   /* ---- Z ---------------------------------------------------------------- */
   --z-base: 0;

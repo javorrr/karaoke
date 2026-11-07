@@ -17,13 +17,20 @@
 }
 
 .lyrics-phrase {
+  background-image: linear-gradient(90deg, var(--pink) 0 3px, transparent 3px);
+  background-position: left top;
+  background-repeat: no-repeat;
+  background-size: 0 100%;
   text-wrap: pretty;
+  transition: background-size var(--t-slow) var(--e-out);
 }
 
 .lyrics-phrase:has(.active) {
-  background: linear-gradient(90deg, var(--pink) 0 3px, transparent 3px);
-  background-position: left top;
-  background-repeat: no-repeat;
+  background-size: 3px 100%;
+}
+
+.lyrics-phrase:has(.lyrics-line:focus-visible) {
+  color: var(--cream);
 }
 
 .lyrics-phrase + .lyrics-phrase {

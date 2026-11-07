@@ -250,6 +250,7 @@ body:has(#player-view:not([hidden])) .site-header {
   place-items: center;
   font-size: 1.35em;
   line-height: 1;
+  transition: translate var(--t-base) var(--e-out);
 }
 
 /* ---- Signal mark ------------------------------------------------------- */
@@ -263,6 +264,8 @@ body:has(#player-view:not([hidden])) .site-header {
   place-items: center;
   justify-self: end;
   isolation: isolate;
+  translate: var(--hero-px) var(--hero-py);
+  transition: translate 420ms var(--e-out);
 }
 
 .hero-signal::before {
@@ -369,6 +372,10 @@ body:has(#player-view:not([hidden])) .site-header {
   font-family: var(--font-mono);
   font-size: var(--step--1);
   letter-spacing: 0.04em;
+}
+
+.status-message[data-state="error"] {
+  color: var(--danger);
 }
 
 .status-message:empty {
