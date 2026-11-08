@@ -1,13 +1,19 @@
 const SONG_METADATA = {
   'Last Christmas': { genre: 'Pop', language: 'Angielski', decade: '1980' },
-  'W sumie nie jest źle': { genre: 'Pop', language: 'Polski', decade: '1970' }
+  'W sumie nie jest źle': { genre: 'Pop', language: 'Polski', decade: '1970' },
 };
 
 const UNKNOWN_METADATA = {
   genre: 'Inne',
   language: 'Nie określono',
-  decade: 'Nie określono'
+  decade: 'Nie określono',
 };
+
+export const FILTER_FIELDS = [
+  { field: 'genre', label: 'Gatunek', emptyLabel: 'Wszystkie gatunki' },
+  { field: 'language', label: 'Język', emptyLabel: 'Wszystkie języki' },
+  { field: 'decade', label: 'Dekada', emptyLabel: 'Wszystkie dekady' },
+];
 
 export function getSongMetadata(song) {
   return SONG_METADATA[song.title] || UNKNOWN_METADATA;

@@ -118,22 +118,34 @@ test.describe('CSS integrity', () => {
 
     for (const token of [
       '--paper',
+      '--paper-raised',
       '--ink',
-      '--cobalt',
-      '--pink',
-      '--pink-ink',
+      '--ink-soft',
+      '--accent',
       '--stage',
+      '--stage-raised',
       '--cream',
+      '--cream-soft',
+      '--surface',
+      '--surface-raised',
+      '--text',
+      '--text-muted',
+      '--line',
+      '--line-strong',
       '--font-display',
       '--font-body',
-      '--font-accent',
       '--font-mono',
-      '--e-out',
-      '--e-in-out',
-      '--e-stamp',
+      '--ease-out',
+      '--ease-in-out',
       '--t-fast',
       '--t-base',
       '--t-slow',
+      '--space-xs',
+      '--space-sm',
+      '--space-md',
+      '--space-lg',
+      '--space-xl',
+      '--space-section',
     ]) {
       expect(defined.has(token), `${token} should be defined`).toBe(true);
     }
@@ -221,11 +233,8 @@ test.describe('CSS integrity', () => {
       return {
         sheets,
         fonts: {
-          display: document.fonts.check('700 1rem "Bricolage Grotesque"'),
+          display: document.fonts.check('700 1rem "Instrument Sans"'),
           body: document.fonts.check('400 1rem "Instrument Sans"'),
-          accent: document.fonts.check(
-            'italic 400 1rem "Instrument Serif"'
-          ),
           mono: document.fonts.check('400 1rem "Geist Mono"'),
         },
         background: getComputedStyle(document.body).backgroundColor,
@@ -239,11 +248,10 @@ test.describe('CSS integrity', () => {
     expect(result.fonts).toEqual({
       display: true,
       body: true,
-      accent: true,
       mono: true,
     });
-    expect(result.background).toBe('rgb(244, 241, 232)');
-    expect(result.color).toBe('rgb(20, 23, 46)');
+    expect(result.background).toBe('rgb(247, 246, 242)');
+    expect(result.color).toBe('rgb(20, 20, 20)');
     expect(result.fontFamily).toContain('Instrument Sans');
   });
 });

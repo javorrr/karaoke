@@ -1,7 +1,57 @@
 /* ==========================================================================
-   SCENA — LYRICS
-   A karaoke teleprompter: phrases dim, the sung word gets a pink highlighter.
+   KARAOKE — LYRICS
+   A quiet teleprompter: phrases dim, the current line finds the light.
    ========================================================================== */
+
+.lyrics-container {
+  display: grid;
+  gap: var(--space-md);
+  margin-block-start: var(--space-section);
+  padding-block-start: var(--space-lg);
+  border-top: 1px solid var(--line-strong);
+}
+
+.lyrics-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.lyrics-heading h2 {
+  font-size: var(--step-2);
+}
+
+.lyrics-hint {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: 0.04em;
+}
+
+#lyrics-display {
+  max-height: 52svh;
+  overflow-y: auto;
+  padding-block: 24%;
+  scroll-behavior: smooth;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    black 9%,
+    black 91%,
+    transparent 100%
+  );
+  scrollbar-color: color-mix(in oklab, var(--text) 26%, transparent) transparent;
+  scrollbar-width: thin;
+}
+
+#lyrics-display:not(:has(.lyrics-phrase)) {
+  padding-block: var(--space-xl);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+}
 
 #lyrics-display::-webkit-scrollbar {
   width: 6px;
@@ -12,52 +62,58 @@
 }
 
 #lyrics-display::-webkit-scrollbar-thumb {
-  border-radius: var(--r-pill);
-  background: color-mix(in oklab, var(--cream) 26%, transparent);
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--text) 26%, transparent);
 }
 
 .lyrics-phrase {
-  background-image: linear-gradient(90deg, var(--pink) 0 3px, transparent 3px);
-  background-position: left top;
-  background-repeat: no-repeat;
-  background-size: 0 100%;
+  margin-block: 0.35rem;
+  color: color-mix(in oklab, var(--text) 38%, transparent);
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 3.2vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
   text-wrap: pretty;
-  transition: background-size var(--t-slow) var(--e-out);
+  transition: color 260ms var(--ease-out);
 }
 
 .lyrics-phrase:has(.active) {
-  background-size: 3px 100%;
+  color: var(--text);
 }
 
-.lyrics-phrase:has(.lyrics-line:focus-visible) {
-  color: var(--cream);
+.lyrics-line {
+  display: inline;
+  padding: 0.02em 0.06em;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  scroll-margin-block: 30svh;
+  transition:
+    background-color var(--t-base) var(--ease-out),
+    color var(--t-base) var(--ease-out);
 }
 
-.lyrics-phrase + .lyrics-phrase {
-  margin-block-start: 0.5rem;
+.lyrics-line:hover {
+  color: var(--accent);
 }
 
-/* The fallback text (no LRC) should read as a note, not a lyric. */
-#lyrics-display:not(:has(.lyrics-phrase)) {
-  border: 1px dashed var(--line-strong);
-  padding: var(--space-lg);
-  text-align: center;
+.lyrics-line:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
 }
 
-.lyrics-hint {
-  display: none;
+.lyrics-line.active {
+  background: color-mix(in oklab, var(--accent) 18%, transparent);
+  color: var(--text);
 }
 
-.lyrics-phrase {
-  line-height: 1.24;
-}
-
-@media (min-width: 561px) {
-  .lyrics-hint {
-    display: inline;
+@media (min-width: 641px) {
+  #lyrics-display {
+    max-height: min(58svh, 34rem);
+    padding-block: 18%;
   }
 
   .lyrics-phrase {
-    line-height: 1.18;
+    font-size: var(--step-3);
   }
 }

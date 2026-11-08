@@ -30,8 +30,8 @@ test.describe('library', () => {
   }) => {
     await gotoLibrary(page);
 
-    const popularBefore = await page
-      .locator('.popular-details strong')
+    const recommendedBefore = await page
+      .locator('.recommendation-song-title')
       .allTextContents();
 
     await page.locator('#song-search').fill('temperatura');
@@ -39,8 +39,8 @@ test.describe('library', () => {
     await expect(page.locator('#songs-list .song-row')).toHaveCount(1);
     await expect(page.locator('.song-title')).toHaveText('Temperatura');
     await expect(page.locator('#song-count')).toHaveText('1 piosenka');
-    await expect(page.locator('.popular-details strong')).toHaveText(
-      popularBefore
+    await expect(page.locator('.recommendation-song-title')).toHaveText(
+      recommendedBefore
     );
 
     await page.locator('#song-search').fill('');
@@ -96,14 +96,11 @@ test.describe('library', () => {
     );
   });
 
-  test('renders recommendations and the popular chart in play-count order', async ({
-    page,
-  }) => {
+  test('renders the Na dziś list in play-count order', async ({ page }) => {
     await gotoLibrary(page);
 
     await expect(page.locator('#recommendations')).toBeVisible();
     await expect(page.locator('.recommended-song')).toHaveCount(3);
-    await expect(page.locator('.popular-song')).toHaveCount(3);
 
     const sorted = [...songsFixture].sort(
       (first, second) => second.play_count - first.play_count
@@ -111,53 +108,45 @@ test.describe('library', () => {
 
     await expect(page.locator('.recommended-song .recommendation-song-title'))
       .toHaveText(sorted.map((song) => song.title));
-
-    await expect(page.locator('.popular-rank')).toHaveText(['1', '2', '3']);
-    await expect(page.locator('.popular-plays')).toHaveText(
+    await expect(page.locator('.recommended-song .recommendation-song-artist'))
+      .toHaveText(sorted.map((song) => song.artist));
+    await expect(page.locator('.recommendation-plays')).toHaveText(
       sorted.map((song) =>
         `${song.play_count} ${song.play_count === 1 ? 'śpiewanie' : 'śpiewań'}`
       )
     );
-    await expect(page.locator('#recommended-title')).toHaveText(
-      'Polecane piosenki'
-    );
-    await expect(page.locator('#popular-title')).toHaveText(
-      'Najchętniej śpiewane'
-    );
+    await expect(page.locator('#recommended-title')).toHaveText('Na dziś');
   });
 
-  test('gives the popular chart the same hover treatment as the setlist', async ({
-    page,
-    hasTouch,
-  }) => {
+  test('highlights the hovered setlist row', async ({ page, hasTouch }) => {
     test.skip(hasTouch, 'hover states require a hover-capable pointer');
 
     await gotoLibrary(page);
 
-    const row = page.locator('.popular-song').first();
+    const row = page.locator('.song-row').first();
+    await row.scrollIntoViewIfNeeded();
     await row.hover();
 
     await expect
       .poll(() =>
-        row.evaluate(
-          (element) => getComputedStyle(element, '::before').opacity
+        row.evaluate((element) => getComputedStyle(element).backgroundColor)
+      )
+      .not.toBe('rgba(0, 0, 0, 0)');
+
+    const singButton = row.locator('.sing-button');
+    await expect
+      .poll(() =>
+        singButton.evaluate(
+          (element) => getComputedStyle(element).backgroundColor
         )
       )
-      .toBe('1');
+      .toBe('rgb(20, 20, 20)');
 
-    const hover = await row.evaluate((element) => ({
-      background: getComputedStyle(element).backgroundColor,
-      titleTransform: getComputedStyle(
-        element.querySelector('.popular-details strong')
-      ).transform,
-      buttonBackground: getComputedStyle(
-        element.querySelector('.popular-sing-button')
-      ).backgroundColor,
-    }));
+    const titleTransform = await row
+      .locator('.song-title')
+      .evaluate((element) => getComputedStyle(element).transform);
 
-    expect(hover.background).not.toBe('rgba(0, 0, 0, 0)');
-    expect(hover.titleTransform).not.toBe('none');
-    expect(hover.buttonBackground).toBe('rgb(27, 42, 107)');
+    expect(titleTransform).not.toBe('none');
   });
 
   test('opens the player from a setlist row and returns', async ({ page }) => {
@@ -185,16 +174,16 @@ test.describe('library', () => {
     await expect(page.locator('#player-artist')).toHaveText('SKOLIM');
   });
 
-  test('records a play and refreshes the popular chart', async ({ page }) => {
+  test('records a play and refreshes the Na dziś list', async ({ page }) => {
     await gotoLibrary(page);
 
     await openPlayer(page);
     await page.locator('#back-button').click();
 
-    await expect(page.locator('.popular-song').first()).toContainText(
+    await expect(page.locator('.recommended-song').first()).toContainText(
       'Last Christmas'
     );
-    await expect(page.locator('.popular-plays').first()).toHaveText(
+    await expect(page.locator('.recommendation-plays').first()).toHaveText(
       '8 śpiewań'
     );
   });

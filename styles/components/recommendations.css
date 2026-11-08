@@ -1,212 +1,26 @@
 /* ==========================================================================
-   SCENA — RECOMMENDATIONS
-   Ticker cards with a folded pink corner; a chart with outlined numerals.
+   KARAOKE — RECOMMENDATIONS
+   Three names, ranked by how often they were sung. No duplicate chart.
    ========================================================================== */
 
 .recommendations:not([hidden]) {
   display: grid;
-  gap: var(--space-xl);
-}
-
-.recommendation-group {
-  display: grid;
   gap: var(--space-md);
 }
 
-.recommendation-group > h2 {
+.recommendation-heading {
   display: flex;
-  align-items: center;
-  gap: 0.6rem;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.recommendation-heading h2 {
   font-size: var(--step-2);
 }
 
-.recommendation-group > h2::before {
-  width: 0.7rem;
-  height: 0.7rem;
-  flex: 0 0 auto;
-  border: 1px solid var(--ink);
-  background: var(--pink);
-  content: "";
-}
-
-.recommended-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
-  gap: var(--space-md);
-}
-
-.recommended-song {
-  position: relative;
-  display: grid;
-  gap: 0.35rem;
-  padding: 1.1rem 1.25rem 1.1rem 1.4rem;
-  border: var(--border-ink) solid var(--ink);
-  border-inline-start: 6px solid var(--pink);
-  background: var(--surface-raised);
-  box-shadow: var(--shadow-stamp-sm);
-  text-align: left;
-  transition:
-    transform var(--t-base) var(--e-out),
-    box-shadow var(--t-base) var(--e-out),
-    background-color var(--t-base) var(--e-out);
-}
-
-.recommended-song::before {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    14rem circle at var(--glow-x) var(--glow-y),
-    color-mix(in oklab, var(--pink) 18%, transparent),
-    transparent 68%
-  );
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--t-base) var(--e-out);
-  content: "";
-}
-
-.recommended-song::after {
-  position: absolute;
-  top: -1.5px;
-  right: -1.5px;
-  border-width: 0 1.4rem 1.4rem 0;
-  border-style: solid;
-  border-color: transparent var(--pink) transparent transparent;
-  content: "";
-}
-
-.recommended-song:hover,
-.recommended-song:focus-visible {
-  background: var(--surface);
-  box-shadow: 6px 6px 0 var(--shadow-color);
-  transform: translate(-2px, -2px) perspective(44rem)
-    rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-  transform-style: preserve-3d;
-}
-
-.recommended-song:hover::before,
-.recommended-song:focus-visible::before {
-  opacity: 1;
-}
-
-.recommended-song:active {
-  box-shadow: 1px 1px 0 var(--shadow-color);
-  transform: translate(1px, 1px) perspective(44rem)
-    rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-}
-
-.recommendation-song-title {
-  display: block;
-  padding-inline-end: 0.9rem;
-  font-family: var(--font-display);
-  font-size: var(--step-1);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.12;
-  overflow-wrap: anywhere;
-}
-
-.recommendation-song-artist {
-  display: block;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: var(--step--2);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-/* ---- Chart ------------------------------------------------------------- */
-.popular-list {
-  border-top: var(--border-ink) solid var(--ink);
-}
-
-.popular-song {
-  position: relative;
-  display: grid;
-  grid-template-areas:
-    "rank details button"
-    "rank plays button";
-  grid-template-columns: 2.3rem minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 0.15rem var(--space-sm);
-  padding-block: 0.75rem;
-  border-bottom: 1px solid var(--line);
-  transition:
-    background-color var(--t-base) var(--e-out),
-    box-shadow var(--t-base) var(--e-out);
-}
-
-.popular-song::before {
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: -0.9rem;
-  width: 4px;
-  background: var(--pink);
-  transform: scaleY(0);
-  transform-origin: center;
-  content: "";
-  opacity: 0;
-  transition:
-    opacity var(--t-base) var(--e-out),
-    transform var(--t-base) var(--e-out);
-}
-
-.popular-song:focus-within {
-  background: color-mix(in oklab, var(--pink) 7%, transparent);
-  box-shadow: -0.9rem 0 0 color-mix(in oklab, var(--pink) 7%, transparent);
-}
-
-.popular-song:focus-within::before {
-  transform: scaleY(1);
-  opacity: 1;
-}
-
-.popular-song:focus-within .popular-details strong {
-  transform: translateX(4px);
-}
-
-.popular-song:focus-within .popular-rank {
-  -webkit-text-stroke-color: var(--pink-ink);
-  translate: 2px 0;
-}
-
-.popular-rank {
-  grid-area: rank;
-  color: transparent;
-  font-family: var(--font-display);
-  font-size: var(--step-3);
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-  line-height: 0.8;
-  -webkit-text-stroke: 1.5px var(--ink);
-  transition:
-    -webkit-text-stroke-color var(--t-base) var(--e-out),
-    translate var(--t-base) var(--e-out);
-}
-
-@supports not (-webkit-text-stroke: 1px currentColor) {
-  .popular-rank {
-    color: var(--ink-soft);
-  }
-}
-
-.popular-details {
-  display: grid;
-  grid-area: details;
-  min-width: 0;
-  gap: 0.1rem;
-}
-
-.popular-details strong {
-  font-family: var(--font-display);
-  font-size: var(--step-0);
-  letter-spacing: -0.01em;
-  line-height: 1.15;
-  overflow-wrap: anywhere;
-  transition: transform var(--t-base) var(--e-out);
-}
-
-.popular-details span {
+.recommendation-note {
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: var(--step--2);
@@ -214,90 +28,99 @@
   text-transform: uppercase;
 }
 
-.popular-plays {
+.recommended-list {
+  display: grid;
+  border-top: 1px solid var(--line-strong);
+}
+
+.recommendation-item {
+  min-width: 0;
+}
+
+.recommended-song {
+  display: grid;
+  width: 100%;
+  grid-template-areas:
+    "title plays"
+    "artist plays";
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.1rem var(--space-sm);
+  padding-block: var(--space-md);
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  text-align: left;
+  transition:
+    background-color var(--t-base) var(--ease-out),
+    transform var(--t-base) var(--ease-out);
+}
+
+.recommendation-song-title {
+  grid-area: title;
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+  transition: transform var(--t-base) var(--ease-out);
+}
+
+.recommendation-song-artist {
+  grid-area: artist;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.recommendation-plays {
   grid-area: plays;
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: var(--step--2);
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  transition: color var(--t-base) var(--ease-out);
 }
 
-.popular-sing-button {
-  grid-area: button;
-  align-self: center;
-  padding: 0.45rem 0.85rem;
-  border: var(--border-ink) solid var(--ink);
-  border-radius: var(--r-pill);
-  background: transparent;
-  color: var(--text);
-  font-family: var(--font-mono);
-  font-size: var(--step--2);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transition:
-    background-color var(--t-base) var(--e-out),
-    color var(--t-base) var(--e-out),
-    scale var(--t-fast) var(--e-out);
-}
-
-.popular-sing-button:hover,
-.popular-sing-button:focus-visible {
-  background: var(--cobalt);
-  color: var(--cream);
-}
-
-.popular-sing-button:hover {
-  scale: 1.03;
-}
-
-.popular-sing-button:active {
-  scale: 0.97;
+.recommended-song:active {
+  transform: scale(0.997);
 }
 
 @media (hover: hover) {
-  .popular-song:hover {
-    background: color-mix(in oklab, var(--pink) 7%, transparent);
-    box-shadow: -0.9rem 0 0 color-mix(in oklab, var(--pink) 7%, transparent);
+  .recommended-song:hover {
+    background: color-mix(in oklab, var(--accent) 5%, transparent);
   }
 
-  .popular-song:hover::before {
-    transform: scaleY(1);
-    opacity: 1;
+  .recommended-song:hover .recommendation-song-title {
+    transform: translateX(3px);
   }
 
-  .popular-song:hover .popular-details strong {
-    transform: translateX(4px);
-  }
-
-  .popular-song:hover .popular-rank {
-    -webkit-text-stroke-color: var(--pink-ink);
-    translate: 2px 0;
-  }
-
-  .popular-song:hover .popular-sing-button {
-    border-color: var(--cobalt);
-    background: var(--cobalt);
-    color: var(--cream);
-    scale: 1.03;
+  .recommended-song:hover .recommendation-plays {
+    color: var(--accent);
   }
 }
 
-@media (min-width: 641px) {
-  .popular-list {
-    display: grid;
-    grid-template-columns: 3rem minmax(0, 1fr) auto auto;
-    column-gap: var(--space-md);
+@media (min-width: 768px) {
+  .recommended-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .popular-song {
-    grid-column: 1 / -1;
-    grid-template-areas: "rank details plays button";
-    grid-template-columns: subgrid;
-    gap: var(--space-md);
-    padding-block: 0.85rem;
+  .recommended-song {
+    height: 100%;
+    padding-inline: var(--space-md);
+    border-bottom: 0;
+    border-inline-start: 1px solid var(--line);
   }
 
-  .popular-rank {
-    font-size: var(--step-4);
+  .recommendation-item:first-child .recommended-song {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+
+  .recommendation-item:last-child .recommended-song {
+    padding-inline-end: 0;
   }
 }

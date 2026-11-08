@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Karaoke — SCENA visual system",
+  "description": "Karaoke — minimalist player with a synced lyric stage",
   "scripts": {
+    "build": "esbuild src/main.jsx --bundle --format=esm --target=es2020 --jsx=automatic --minify --outfile=js/app.bundle.js",
+    "build:watch": "esbuild src/main.jsx --bundle --format=esm --target=es2020 --jsx=automatic --outfile=js/app.bundle.js --watch",
     "serve": "php -S 127.0.0.1:8123 -t .",
+    "pretest": "npm run build",
     "test": "playwright test",
     "test:update": "playwright test --update-snapshots",
     "test:headed": "playwright test --headed",
@@ -16,6 +19,12 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",
-    "@playwright/test": "^1.65.0"
+    "@playwright/test": "^1.65.0",
+    "esbuild": "^0.28.2"
+  },
+  "dependencies": {
+    "motion": "^14.10.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   }
 }

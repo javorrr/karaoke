@@ -1,11 +1,12 @@
 /* ==========================================================================
-   SCENA — SONGS
-   A numbered setlist. Hover stamps the row and fills the sing button.
+   KARAOKE — SONGS
+   The setlist: one aligned table, no numbering, no boxes.
    ========================================================================== */
 
 .songs-list {
-  border-top: var(--border-ink) solid var(--ink);
-  counter-reset: track;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  border-top: 1px solid var(--line);
 }
 
 .songs-list:empty {
@@ -13,175 +14,97 @@
 }
 
 .song-row {
-  position: relative;
   display: grid;
-  grid-template-areas:
-    "track info"
-    "track button";
-  grid-template-columns: 2rem minmax(0, 1fr);
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
   align-items: center;
-  gap: 0.55rem var(--space-md);
+  gap: var(--space-sm);
   padding-block: var(--space-md);
   border-bottom: 1px solid var(--line);
-  transition:
-    background-color var(--t-base) var(--e-out),
-    box-shadow var(--t-base) var(--e-out);
-}
-
-.song-row::after {
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: -0.6rem;
-  width: 4px;
-  background: var(--pink);
-  transform: scaleY(0);
-  transform-origin: center;
-  content: "";
-  opacity: 0;
-  transition:
-    opacity var(--t-base) var(--e-out),
-    transform var(--t-base) var(--e-out);
-}
-
-.song-row::before {
-  grid-area: track;
-  align-self: start;
-  padding-block-start: 0.3rem;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.08em;
-  transition: color var(--t-base) var(--e-out);
-  content: counter(track, decimal-leading-zero);
-  counter-increment: track;
+  background: transparent;
+  transition: background-color var(--t-base) var(--ease-out);
 }
 
 .song-info {
   display: grid;
-  grid-area: info;
   min-width: 0;
   gap: 0.1rem;
 }
 
 .song-title {
   font-size: var(--step-1);
-  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
   overflow-wrap: anywhere;
-  transition:
-    color var(--t-base) var(--e-out),
-    transform var(--t-base) var(--e-out);
+  transition: transform var(--t-base) var(--ease-out);
 }
 
 .song-artist {
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: var(--step--2);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.4;
 }
 
 .sing-button {
-  grid-area: button;
-  justify-self: start;
-  padding: 0.6rem 1.1rem;
-  border: var(--border-ink) solid var(--ink);
-  border-radius: var(--r-pill);
+  justify-self: end;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
   background: transparent;
   color: var(--text);
   font-family: var(--font-mono);
-  font-size: var(--step--1);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: var(--step--2);
+  letter-spacing: 0.04em;
   white-space: nowrap;
   transition:
-    background-color var(--t-base) var(--e-out),
-    border-color var(--t-base) var(--e-out),
-    color var(--t-base) var(--e-out),
-    scale var(--t-fast) var(--e-out),
-    transform var(--t-fast) var(--e-out);
-}
-
-.sing-button::after {
-  display: inline-block;
-  margin-inline-start: 0.5rem;
-  content: "→";
-  transition: transform var(--t-base) var(--e-out);
-}
-
-.sing-button:hover::after {
-  transform: translateX(3px);
+    background-color var(--t-base) var(--ease-out),
+    border-color var(--t-base) var(--ease-out),
+    color var(--t-base) var(--ease-out),
+    transform var(--t-fast) var(--ease-out);
 }
 
 .sing-button:active {
-  scale: 0.97;
-  transform: translateY(1px);
-}
-
-.sing-button:focus-visible {
-  border-color: var(--cobalt);
-  background: var(--cobalt);
-  color: var(--cream);
+  transform: scale(0.96);
 }
 
 .song-row:focus-within {
-  background: color-mix(in oklab, var(--pink) 7%, transparent);
-  box-shadow: -0.6rem 0 0 color-mix(in oklab, var(--pink) 7%, transparent);
-}
-
-.song-row:focus-within::after {
-  transform: scaleY(1);
-  opacity: 1;
-}
-
-.song-row:focus-within::before {
-  color: var(--pink-ink);
+  background: color-mix(in oklab, var(--accent) 5%, transparent);
 }
 
 .song-row:focus-within .song-title {
-  transform: translateX(4px);
+  transform: translateX(3px);
 }
 
 @media (hover: hover) {
   .song-row:hover {
-    background: color-mix(in oklab, var(--pink) 7%, transparent);
-    box-shadow: -0.6rem 0 0 color-mix(in oklab, var(--pink) 7%, transparent);
-  }
-
-  .song-row:hover::after {
-    transform: scaleY(1);
-    opacity: 1;
-  }
-
-  .song-row:hover::before {
-    color: var(--pink-ink);
+    background: color-mix(in oklab, var(--accent) 5%, transparent);
   }
 
   .song-row:hover .song-title {
-    transform: translateX(4px);
+    transform: translateX(3px);
   }
 
   .song-row:hover .sing-button {
-    border-color: var(--cobalt);
-    background: var(--cobalt);
-    color: var(--cream);
-    scale: 1.02;
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
   }
 }
 
-@media (min-width: 561px) {
+@media (min-width: 641px) {
   .song-row {
-    grid-template-areas: "track info button";
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    padding-block: 1.15rem;
     gap: var(--space-md);
-  }
-
-  .song-row::before {
-    align-self: center;
-    padding-block-start: 0;
   }
 
   .song-title {
     font-size: var(--step-2);
+  }
+
+  .sing-button {
+    padding: 0.55rem 1.1rem;
   }
 }

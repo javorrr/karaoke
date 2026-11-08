@@ -3,7 +3,11 @@ import { gotoLibrary, openPlayer } from './helpers.js';
 
 const setRange = (page, selector, value) =>
   page.locator(selector).evaluate((element, nextValue) => {
-    element.value = String(nextValue);
+    const setter = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      'value'
+    ).set;
+    setter.call(element, String(nextValue));
     element.dispatchEvent(new Event('input', { bubbles: true }));
     element.dispatchEvent(new Event('change', { bubbles: true }));
   }, value);
@@ -186,23 +190,23 @@ test.describe('player', () => {
       background: getComputedStyle(document.body).backgroundColor,
       color: getComputedStyle(document.body).color,
     }));
-    expect(library.background).toBe('rgb(244, 241, 232)');
-    expect(library.color).toBe('rgb(20, 23, 46)');
+    expect(library.background).toBe('rgb(247, 246, 242)');
+    expect(library.color).toBe('rgb(20, 20, 20)');
 
     await openPlayer(page);
     await expect
       .poll(() =>
         page.evaluate(() => getComputedStyle(document.body).backgroundColor)
       )
-      .toBe('rgb(11, 16, 38)');
+      .toBe('rgb(17, 17, 18)');
 
     const stage = await page.evaluate(() => ({
       background: getComputedStyle(document.body).backgroundColor,
       color: getComputedStyle(document.body).color,
       scheme: getComputedStyle(document.body).colorScheme,
     }));
-    expect(stage.background).toBe('rgb(11, 16, 38)');
-    expect(stage.color).toBe('rgb(255, 248, 238)');
+    expect(stage.background).toBe('rgb(17, 17, 18)');
+    expect(stage.color).toBe('rgb(243, 241, 234)');
     expect(stage.scheme).toBe('dark');
   });
 
