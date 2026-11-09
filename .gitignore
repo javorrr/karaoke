@@ -16,7 +16,7 @@ coverage/
 *.actual.png
 *.diff.png
 *.log
-
+db/karaoke.sqlite
 # Agent / AI tooling (not part of the app)
 .agents/
 .github/prompts/
