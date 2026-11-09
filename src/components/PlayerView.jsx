@@ -161,20 +161,70 @@ export function PlayerView({
 
             <div className="mixer-controls">
               <div className="volume-control">
-                <button
-                  id="mute-button"
-                  className="icon-button"
-                  type="button"
-                  aria-label={
-                    player.muted
-                      ? 'muted — włącz dźwięk'
-                      : 'sound — wycisz dźwięk'
-                  }
-                  aria-pressed={player.muted}
-                  onClick={player.toggleMute}
-                >
-                  {player.muted ? 'muted' : 'sound'}
-                </button>
+                <span className="mute-toggle">
+                  <input
+                    id="mute-toggle-state"
+                    className="mute-toggle__input"
+                    type="checkbox"
+                    checked={player.muted}
+                    readOnly
+                    tabIndex={-1}
+                    aria-hidden="true"
+                  />
+                  <button
+                    id="mute-button"
+                    className="icon-button mute-toggle__button"
+                    type="button"
+                    aria-label={
+                      player.muted ? 'Włącz dźwięk' : 'Wycisz'
+                    }
+                    title={player.muted ? 'Włącz dźwięk' : 'Wycisz'}
+                    aria-pressed={player.muted}
+                    onClick={player.toggleMute}
+                  >
+                    <span className="mute-toggle__icons" aria-hidden="true">
+                      <svg
+                        className="mute-toggle__speaker"
+                        viewBox="0 0 24 24"
+                        focusable="false"
+                      >
+                        <path
+                          d="M4 9.2h3.1L12 5.3v13.4L7.1 14.8H4z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                      <svg
+                        className="mute-toggle__waves"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        focusable="false"
+                      >
+                        <path
+                          d="M15 8.4a5.2 5.2 0 0 1 0 7.2M17.7 5.7a8.9 8.9 0 0 1 0 12.6"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                      <svg
+                        className="mute-toggle__slash"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        focusable="false"
+                      >
+                        <path
+                          d="M16 9.4l5 5.2M21 9.4l-5 5.2"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </span>
+                    <span className="sr-only">
+                      {player.muted ? 'muted' : 'sound'}
+                    </span>
+                  </button>
+                </span>
                 <input
                   id="volume-slider"
                   type="range"
@@ -194,6 +244,7 @@ export function PlayerView({
                 <select
                   id="speed-select"
                   value={String(player.speed)}
+                  data-lenis-prevent
                   onChange={(event) => player.setSpeed(event.target.value)}
                 >
                   <option value="0.5">0,5×</option>
@@ -225,8 +276,6 @@ export function PlayerView({
         </div>
         <Lyrics
           activeIndex={lyrics.activeIndex}
-          currentTime={player.currentTime}
-          duration={player.duration}
           follow={player.follow}
           onSeek={player.seek}
           phrases={lyrics.phrases}

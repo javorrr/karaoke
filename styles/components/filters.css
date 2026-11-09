@@ -81,6 +81,35 @@
   outline-offset: 2px;
 }
 
+/* Native option menus are OS-drawn; these states apply where the platform
+   exposes them. The selected option reuses the accent token indicator. */
+.filter-field select option {
+  background-color: var(--surface-raised);
+  color: var(--text);
+}
+
+.filter-field select option:checked {
+  background-color: var(--accent);
+  color: var(--accent-contrast);
+}
+
+@supports (selector(option:hover)) {
+  .filter-field select option:hover {
+    background-color: color-mix(in oklab, var(--accent) 16%, var(--surface-raised));
+    color: var(--text);
+  }
+}
+
+.filter-field select option:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.filter-field select option:disabled {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
 .reset-filters {
   justify-self: start;
   padding-block: 0.5rem;

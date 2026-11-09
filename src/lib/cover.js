@@ -45,14 +45,18 @@ export function formatSongDuration(value) {
 
   if (!Number.isFinite(seconds) || seconds <= 0) return '--:--';
 
-  const minutes = Math.floor(seconds / 60)
-    .toString()
-    .padStart(2, '0');
-  const remainder = Math.floor(seconds % 60)
-    .toString()
-    .padStart(2, '0');
+  const total = Math.floor(seconds);
+  const hours = Math.floor(total / 3600);
+  const minutes = Math.floor((total % 3600) / 60);
+  const remainder = total % 60;
 
-  return `${minutes}:${remainder}`;
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${remainder
+      .toString()
+      .padStart(2, '0')}`;
+  }
+
+  return `${minutes}:${remainder.toString().padStart(2, '0')}`;
 }
 
 export function durationLabel(value) {

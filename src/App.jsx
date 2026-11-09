@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import Lenis from 'lenis';
 import { flushSync } from 'react-dom';
 import { Header } from './components/Header.jsx';
 import { LibraryView } from './components/LibraryView.jsx';
@@ -20,6 +21,63 @@ export default function App() {
     duration: player.duration,
     currentTime: player.currentTime,
   });
+
+  const toggleMute = player.toggleMute;
+
+  useEffect(() => {
+    const lenis = new Lenis({
+      autoRaf: true,
+      anchors: true,
+      respectReducedMotion: true,
+    });
+    const root = document.documentElement;
+    const publishProgress = (instance) => {
+      const progress = Number.isFinite(instance.progress) ? instance.progress : 0;
+      root.style.setProperty('--lenis-progress', progress.toFixed(4));
+    };
+
+    lenis.on('scroll', publishProgress);
+    publishProgress(lenis);
+    window.__lenis = lenis;
+
+    return () => {
+      lenis.off('scroll', publishProgress);
+      lenis.destroy();
+      delete window.__lenis;
+      root.style.removeProperty('--lenis-progress');
+    };
+  }, []);
+
+  useEffect(() => {
+    if (view !== 'player') return undefined;
+
+    const handleKeyDown = (event) => {
+      if (
+        event.defaultPrevented ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.altKey
+      ) {
+        return;
+      }
+
+      if (event.key !== 'm' && event.key !== 'M') return;
+
+      const target = event.target;
+      if (
+        target instanceof Element &&
+        target.closest('input, textarea, select, [contenteditable="true"]')
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      toggleMute();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggleMute, view]);
 
   const openSong = (song) => {
     const canonicalSong =

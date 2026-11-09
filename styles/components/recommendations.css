@@ -89,6 +89,20 @@
   transform: scale(0.997);
 }
 
+.recommended-song:focus-visible {
+  background: color-mix(in oklab, var(--accent) 5%, transparent);
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.recommended-song:focus-visible .recommendation-song-title {
+  transform: translateX(3px);
+}
+
+.recommended-song:focus-visible .recommendation-plays {
+  color: var(--accent);
+}
+
 @media (hover: hover) {
   .recommended-song:hover {
     background: color-mix(in oklab, var(--accent) 5%, transparent);
@@ -100,6 +114,20 @@
 
   .recommended-song:hover .recommendation-plays {
     color: var(--accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recommended-song,
+  .recommendation-song-title,
+  .recommendation-plays {
+    transition-property: background-color, color;
+  }
+
+  .recommended-song:active,
+  .recommended-song:hover .recommendation-song-title,
+  .recommended-song:focus-visible .recommendation-song-title {
+    transform: none;
   }
 }
 

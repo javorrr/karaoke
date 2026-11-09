@@ -74,10 +74,30 @@ export function useLyrics({ song, duration, currentTime }) {
     };
   }, [song, song?.id, song?.title, song?.artist, song?.lrc_url]);
 
-  const lines = useMemo(
-    () => toTimedLines(rawLines, duration),
-    [duration, rawLines]
-  );
+  const lines = useMemo(() => {
+    const timed = toTimedLines(rawLines, duration);
+
+    return timed.map((line, index) => {
+      if (!Number.isFinite(line.time)) {
+        return { ...line, end: null };
+      }
+
+      const next = timed
+        .slice(index + 1)
+        .find((candidate) => Number.isFinite(candidate.time));
+      const fallbackEnd = Number.isFinite(next?.time)
+        ? next.time
+        : Number.isFinite(duration) && duration > 0
+          ? duration
+          : Number.POSITIVE_INFINITY;
+      const end =
+        Number.isFinite(line.end) && line.end > line.time
+          ? line.end
+          : fallbackEnd;
+
+      return { ...line, end };
+    });
+  }, [duration, rawLines]);
 
   const phrases = useMemo(() => {
     return groupIntoPhrases(lines).map((phrase) =>
@@ -89,15 +109,14 @@ export function useLyrics({ song, duration, currentTime }) {
   }, [lines]);
 
   const activeIndex = useMemo(() => {
-    let nextActive = -1;
+    if (!Number.isFinite(currentTime)) return -1;
 
-    lines.forEach((line, index) => {
-      if (Number.isFinite(line.time) && currentTime >= line.time) {
-        nextActive = index;
-      }
-    });
-
-    return nextActive;
+    return lines.findIndex(
+      (line) =>
+        Number.isFinite(line.time) &&
+        currentTime >= line.time &&
+        currentTime < line.end
+    );
   }, [currentTime, lines]);
 
   return { activeIndex, lines, phrases, status };

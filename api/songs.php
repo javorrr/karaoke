@@ -7,13 +7,14 @@ try {
     require_once __DIR__ . '/../db/db.php';
     require_once __DIR__ . '/../db/ensure-schema.php';
     ensurePlayCountColumn($pdo);
+    ensureDetailsColumn($pdo);
 
     $query = trim((string) ($_GET['q'] ?? ''));
     if ($query === '') {
-        $statement = $pdo->query('SELECT id, title, artist, audio_url, instrumental_url, lrc_url, play_count FROM songs ORDER BY title COLLATE NOCASE ASC');
+        $statement = $pdo->query('SELECT id, title, artist, audio_url, instrumental_url, lrc_url, play_count, details FROM songs ORDER BY title COLLATE NOCASE ASC');
     } else {
         $statement = $pdo->prepare(
-            'SELECT id, title, artist, audio_url, instrumental_url, lrc_url, play_count
+            'SELECT id, title, artist, audio_url, instrumental_url, lrc_url, play_count, details
              FROM songs
              WHERE title LIKE :query OR artist LIKE :query
              ORDER BY title COLLATE NOCASE ASC'

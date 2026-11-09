@@ -115,11 +115,28 @@ export function useAudioPlayer() {
       setFailed(true);
       setError(AUDIO_ERROR);
     };
+    const handleVolumeChange = () => {
+      setPreferences((current) => {
+        const nextVolume = Number.isFinite(audio.volume)
+          ? audio.volume
+          : current.volume;
+        const nextMuted = Boolean(audio.muted) || nextVolume === 0;
+
+        if (nextVolume === current.volume && nextMuted === current.muted) {
+          return current;
+        }
+
+        store(STORAGE_KEYS.volume, String(nextVolume));
+        store(STORAGE_KEYS.muted, String(nextMuted));
+        return { ...current, volume: nextVolume, muted: nextMuted };
+      });
+    };
 
     audio.addEventListener('loadedmetadata', updateDuration);
     audio.addEventListener('durationchange', updateDuration);
     audio.addEventListener('timeupdate', handleTimeUpdate);
     audio.addEventListener('progress', handleProgress);
+    audio.addEventListener('volumechange', handleVolumeChange);
     audio.addEventListener('play', handlePlay);
     audio.addEventListener('pause', handlePause);
     audio.addEventListener('ended', handleEnded);
@@ -131,6 +148,7 @@ export function useAudioPlayer() {
       audio.removeEventListener('durationchange', updateDuration);
       audio.removeEventListener('timeupdate', handleTimeUpdate);
       audio.removeEventListener('progress', handleProgress);
+      audio.removeEventListener('volumechange', handleVolumeChange);
       audio.removeEventListener('play', handlePlay);
       audio.removeEventListener('pause', handlePause);
       audio.removeEventListener('ended', handleEnded);

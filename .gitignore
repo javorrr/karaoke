@@ -1,8 +1,43 @@
+# ==========================================================================
+#  Web app runtime (commit these)
+#  index.html, js/app.bundle.js, js/intro.js, styles/, api/, db/, songs/audio/
+#  Everything below is tooling, generated data, or local noise.
+# ==========================================================================
+
+# Dependencies
 node_modules/
-test-results/
+
+# Build / test output
+js/app.bundle.css
 playwright-report/
+test-results/
 .artifacts/
+coverage/
 *.actual.png
 *.diff.png
+*.log
+
+# Agent / AI tooling (not part of the app)
+.agents/
+.github/prompts/
+.github/skills/
+skills-lock.json
+
+# Tests are a dev concern, not part of the running app
 tests/
-.gitignorechd/
+
+# Local environment / editor / OS noise
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# PHP / server-local junk
+.php-cs-fixer.cache
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm

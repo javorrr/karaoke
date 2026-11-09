@@ -1,22 +1,14 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion, useReducedMotion, AnimatePresence } from 'motion/react';
-import { DURATION, EASE, STAGGER } from '../lib/motion.js';
+import { STAGGER } from '../lib/motion.js';
 import { getCoverStyle, getMonogram, formatSongDuration, durationLabel } from '../lib/cover.js';
 import { usePointerGlow } from '../hooks/usePointerGlow.js';
+import { useSongDurations } from '../hooks/useSongDurations.js';
 
 const list = {
   hidden: {},
   visible: {
     transition: { staggerChildren: STAGGER },
-  },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 8 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: DURATION, ease: EASE },
   },
 };
 
@@ -30,8 +22,62 @@ export function SongList({
 }) {
   const reduceMotion = useReducedMotion();
   const listRef = useRef(null);
+  const { durationFor, requestDuration } = useSongDurations(songs);
 
   usePointerGlow(listRef);
+
+  useEffect(() => {
+    if (reduceMotion) return undefined;
+
+    const root = listRef.current;
+    if (!root) return undefined;
+
+    const rows = [...root.querySelectorAll('.song-row[data-revealed="false"]')];
+    if (!rows.length) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.dataset.revealed = 'true';
+          observer.unobserve(entry.target);
+        }
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
+    );
+
+    rows.forEach((row) => observer.observe(row));
+
+    return () => observer.disconnect();
+  }, [reduceMotion, songs]);
+
+  useEffect(() => {
+    const root = listRef.current;
+    if (!root) return undefined;
+
+    const targets = [...root.querySelectorAll('.song-row')].filter((row) =>
+      row.querySelector('.song-duration[data-duration-src]')
+    );
+    if (!targets.length) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const slot = entry.target.querySelector(
+            '.song-duration[data-duration-src]'
+          );
+          if (slot) requestDuration(slot.dataset.durationSrc);
+          observer.unobserve(entry.target);
+        }
+      },
+      { rootMargin: '120px 0px' }
+    );
+
+    targets.forEach((target) => observer.observe(target));
+
+    return () => observer.disconnect();
+  }, [requestDuration, songs]);
 
   const selectedId = activeId ?? null;
   const coversSelected = transitionSongId ?? selectedId;
@@ -50,6 +96,7 @@ export function SongList({
       aria-live="polite"
       aria-busy={isLoading}
       data-testid="songs-list"
+      data-lenis-prevent
       initial={reduceMotion ? false : 'hidden'}
       animate="visible"
       variants={list}
@@ -92,10 +139,10 @@ export function SongList({
                   <motion.article
                     className={rowClasses}
                     key={song.id}
-                    variants={item}
                     layout
                     aria-current={isActive ? 'true' : undefined}
                     data-song-id={song.id}
+                    data-revealed={reduceMotion ? undefined : 'false'}
                     data-testid="song-row"
                   >
                     <span className="song-index" aria-hidden="true">
@@ -126,9 +173,10 @@ export function SongList({
 
                     <span
                       className="song-duration"
-                      aria-label={durationLabel(song.duration)}
+                      aria-label={durationLabel(durationFor(song))}
+                      data-duration-src={song.stream_url || song.audio_url}
                     >
-                      {formatSongDuration(song.duration)}
+                      {formatSongDuration(durationFor(song))}
                     </span>
 
                     <button

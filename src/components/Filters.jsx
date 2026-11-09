@@ -4,6 +4,9 @@ const FILTER_ARIA = {
   decade: 'Filtruj według dekady',
 };
 
+const filterAria = (field, label) =>
+  FILTER_ARIA[field] || `Filtruj według: ${label}`;
+
 export function Filters({
   filters,
   filterOptions,
@@ -28,8 +31,10 @@ export function Filters({
             <span>{label}</span>
             <select
               id={`${field}-filter`}
-              aria-label={FILTER_ARIA[field]}
-              value={filters[field]}
+              aria-label={filterAria(field, label)}
+              value={filters[field] ?? ''}
+              data-filter-field={field}
+              data-lenis-prevent
               onChange={(event) => onFilterChange(field, event.target.value)}
             >
               <option value="">{emptyLabel}</option>

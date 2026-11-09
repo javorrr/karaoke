@@ -61,12 +61,6 @@
   initial-value: #e8564b;
 }
 
-@property --line-progress {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 0%;
-}
-
 @property --progress {
   syntax: "<percentage>";
   inherits: false;
@@ -96,11 +90,6 @@
   --ink-soft: #6e6e6a;
   --accent: #c8342a;
   --accent-contrast: #fdfcf9;
-  --stage: #111112;
-  --stage-raised: #1a1a1c;
-  --stage-deep: #0a0a0b;
-  --cream: #f3f1ea;
-  --cream-soft: #b5b2ab;
   --danger: #a3241c;
   --danger-stage: #ff9a90;
 
@@ -111,9 +100,14 @@
   --text: var(--ink);
   --text-muted: var(--ink-soft);
   --highlight: color-mix(in oklab, var(--accent) 18%, transparent);
-  --stage-accent: #e8564b;
-  --stage-accent-contrast: #141414;
-  --stage-focus: #f07a70;
+  --stage: var(--paper);
+  --stage-raised: var(--paper-raised);
+  --stage-deep: var(--paper-sunken);
+  --cream: var(--ink);
+  --cream-soft: var(--ink-soft);
+  --stage-accent: var(--accent);
+  --stage-accent-contrast: var(--accent-contrast);
+  --stage-focus: var(--focus);
   --line: color-mix(in oklab, var(--ink) 13%, transparent);
   --line-strong: color-mix(in oklab, var(--ink) 30%, transparent);
   --focus: var(--accent);
@@ -134,6 +128,20 @@
   --cover-b: #6d2b25;
   --cover-c: #c8342a;
   --cover-ink: #fdfcf9;
+  --cover-frame: rgb(255 255 255 / 0.18);
+  --cover-grid: rgb(255 255 255 / 0.06);
+  --cover-shade: rgb(0 0 0 / 0.28);
+  --cover-ring: rgb(255 255 255 / 0.3);
+
+  /* ---- Mute widget ------------------------------------------------------ */
+  /* Given dark circle and white icons; identical in both modes. */
+  --mute-surface: #17171d;
+  --mute-surface-hover: #26262e;
+  --mute-surface-muted: #0d0d10;
+  --mute-ink: #f8f7f2;
+  --mute-ink-hover: #fff;
+  --mute-shadow: 0 4px 12px rgb(0 0 0 / 0.35);
+  --mute-shadow-hover: 0 4px 12px rgb(0 0 0 / 0.4);
 
   /* ---- Typography ------------------------------------------------------- */
   --font-display: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
@@ -223,7 +231,7 @@
   --progress: 0%;
   --buffered: 0%;
   --volume: 100%;
-  --line-progress: 0%;
+  --lenis-progress: 0;
   --glow-x: 50%;
   --glow-y: 50%;
   --magnet-x: 0px;
@@ -253,16 +261,8 @@
   --ink-soft: #566b61;
   --accent: #0e7a5f;
   --accent-contrast: #fbfdfb;
-  --stage: #0e1714;
-  --stage-raised: #15241e;
-  --stage-deep: #07100c;
-  --cream: #eff7f2;
-  --cream-soft: #b2c6ba;
   --danger: #9b2c2c;
   --danger-stage: #ffb4a8;
-  --stage-accent: #4fd6aa;
-  --stage-accent-contrast: #062019;
-  --stage-focus: #8df3cf;
   --highlight: color-mix(in oklab, var(--accent) 18%, transparent);
   --shadow-soft: 0 14px 40px -24px rgb(6 32 25 / 0.35);
   --shadow-lift: 0 18px 42px -30px rgb(6 32 25 / 0.5);
@@ -280,19 +280,87 @@
   --ink-soft: #585f70;
   --accent: #3a4fc4;
   --accent-contrast: #fbfbfe;
+  --danger: #a02637;
+  --danger-stage: #ffb1bb;
+  --highlight: color-mix(in oklab, var(--accent) 16%, transparent);
+  --shadow-soft: 0 14px 40px -24px rgb(10 14 30 / 0.35);
+  --shadow-lift: 0 18px 42px -30px rgb(10 14 30 / 0.5);
+}
+
+/* ==========================================================================
+   DARK MODE
+   `<html data-mode="dark">` supplies the same six-token contract in reverse.
+   The stage palette is already dark and stays untouched, so the player keeps
+   its per-preset identity in either mode. Selectors are ordered after the
+   light presets so a dark preset always wins for its own theme.
+   ========================================================================== */
+
+:root[data-mode="dark"] {
+  color-scheme: dark;
+
+  --paper: #121214;
+  --paper-raised: #1c1c1f;
+  --paper-sunken: #0a0a0b;
+  --ink: #f3f1ea;
+  --ink-soft: #b7b4ad;
+  --accent: #f47c72;
+  --accent-contrast: #161616;
+  --danger: #ff9a90;
+  --highlight: color-mix(in oklab, var(--accent) 20%, transparent);
+  --stage: #111112;
+  --stage-raised: #1a1a1c;
+  --stage-deep: #0a0a0b;
+  --cream: #f3f1ea;
+  --cream-soft: #b5b2ab;
+  --stage-accent: #e8564b;
+  --stage-accent-contrast: #141414;
+  --stage-focus: #f07a70;
+  --shadow-soft: 0 14px 40px -24px rgb(0 0 0 / 0.72);
+  --shadow-lift: 0 18px 42px -30px rgb(0 0 0 / 0.82);
+}
+
+:root[data-theme="jade"][data-mode="dark"] {
+  --paper: #0f1a16;
+  --paper-raised: #16261f;
+  --paper-sunken: #08110d;
+  --ink: #eff7f2;
+  --ink-soft: #b2c6ba;
+  --accent: #53dcb0;
+  --accent-contrast: #062019;
+  --danger: #ffb4a8;
+  --highlight: color-mix(in oklab, var(--accent) 20%, transparent);
+  --stage: #0e1714;
+  --stage-raised: #15241e;
+  --stage-deep: #07100c;
+  --cream: #eff7f2;
+  --cream-soft: #b2c6ba;
+  --stage-accent: #4fd6aa;
+  --stage-accent-contrast: #062019;
+  --stage-focus: #8df3cf;
+  --shadow-soft: 0 14px 40px -24px rgb(0 0 0 / 0.72);
+  --shadow-lift: 0 18px 42px -30px rgb(0 0 0 / 0.82);
+}
+
+:root[data-theme="cobalt"][data-mode="dark"] {
+  --paper: #0e1018;
+  --paper-raised: #171b2c;
+  --paper-sunken: #070911;
+  --ink: #f1f2f8;
+  --ink-soft: #b7bdd0;
+  --accent: #9fb0ff;
+  --accent-contrast: #10142a;
+  --danger: #ffb1bb;
+  --highlight: color-mix(in oklab, var(--accent) 20%, transparent);
   --stage: #0d0f1a;
   --stage-raised: #151a2b;
   --stage-deep: #070911;
   --cream: #f1f2f8;
   --cream-soft: #b7bdd0;
-  --danger: #a02637;
-  --danger-stage: #ffb1bb;
   --stage-accent: #8ea0ff;
   --stage-accent-contrast: #10142a;
   --stage-focus: #b9c4ff;
-  --highlight: color-mix(in oklab, var(--accent) 16%, transparent);
-  --shadow-soft: 0 14px 40px -24px rgb(10 14 30 / 0.35);
-  --shadow-lift: 0 18px 42px -30px rgb(10 14 30 / 0.5);
+  --shadow-soft: 0 14px 40px -24px rgb(0 0 0 / 0.72);
+  --shadow-lift: 0 18px 42px -30px rgb(0 0 0 / 0.82);
 }
 
 /* ==========================================================================
@@ -301,7 +369,7 @@
    ========================================================================== */
 
 body:has(#player-view:not([hidden])) {
-  color-scheme: dark;
+  color-scheme: light;
 
   --surface: var(--stage);
   --surface-raised: var(--stage-raised);
@@ -310,13 +378,29 @@ body:has(#player-view:not([hidden])) {
   --text-muted: var(--cream-soft);
   --accent: var(--stage-accent);
   --accent-contrast: var(--stage-accent-contrast);
-  --line: color-mix(in oklab, var(--cream) 14%, transparent);
-  --line-strong: color-mix(in oklab, var(--cream) 32%, transparent);
+  --line: color-mix(in oklab, var(--cream) 13%, transparent);
+  --line-strong: color-mix(in oklab, var(--cream) 30%, transparent);
   --focus: var(--stage-focus);
   --focus-contrast: var(--stage-accent-contrast);
-  --danger: var(--danger-stage);
   --selection-bg: var(--accent);
   --selection-ink: var(--accent-contrast);
+  --shadow-soft: 0 18px 50px -24px rgb(20 20 20 / 0.18);
+  --shadow-lift: 0 24px 60px -30px rgb(20 20 20 / 0.28);
+
+  /* Active lyrics stay above 7:1; every other line above 4.5:1. */
+  --lyric-active: var(--cream);
+  --lyric-dim: var(--cream-soft);
+  --lyric-upcoming: var(--cream-soft);
+  --lyric-wash: color-mix(in oklab, var(--stage-accent) 18%, transparent);
+  --lyric-glow: 0 0 0 transparent;
+}
+
+/* Lights down: the dark stage keeps today's exact palette. */
+:root[data-mode="dark"] body:has(#player-view:not([hidden])) {
+  color-scheme: dark;
+
+  --line: color-mix(in oklab, var(--cream) 14%, transparent);
+  --line-strong: color-mix(in oklab, var(--cream) 32%, transparent);
   --shadow-soft: 0 18px 50px -24px rgb(0 0 0 / 0.8);
   --shadow-lift: 0 24px 60px -30px rgb(0 0 0 / 0.9);
 

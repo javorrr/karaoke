@@ -1,16 +1,26 @@
 <?php
 declare(strict_types=1);
 
-function ensurePlayCountColumn(PDO $pdo): void
+function ensureSongColumn(PDO $pdo, string $name, string $definition): void
 {
     $columns = $pdo->query('PRAGMA table_info(songs)')->fetchAll(PDO::FETCH_ASSOC);
-    $hasPlayCount = array_reduce(
+    $exists = array_reduce(
         $columns,
-        static fn (bool $found, array $column): bool => $found || $column['name'] === 'play_count',
+        static fn (bool $found, array $column): bool => $found || $column['name'] === $name,
         false
     );
 
-    if (!$hasPlayCount) {
-        $pdo->exec('ALTER TABLE songs ADD COLUMN play_count INTEGER NOT NULL DEFAULT 0');
+    if (!$exists) {
+        $pdo->exec(sprintf('ALTER TABLE songs ADD COLUMN %s %s', $name, $definition));
     }
+}
+
+function ensurePlayCountColumn(PDO $pdo): void
+{
+    ensureSongColumn($pdo, 'play_count', 'INTEGER NOT NULL DEFAULT 0');
+}
+
+function ensureDetailsColumn(PDO $pdo): void
+{
+    ensureSongColumn($pdo, 'details', 'TEXT');
 }

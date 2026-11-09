@@ -83,35 +83,6 @@
   background: color-mix(in oklab, var(--text) 26%, transparent);
 }
 
-/* A quiet preview of what is coming; hidden from the live region. */
-.lyrics-next {
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  min-height: 1.5rem;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: var(--step--2);
-  letter-spacing: 0.03em;
-  pointer-events: none;
-}
-
-.lyrics-next span {
-  flex: 0 0 auto;
-  color: var(--accent);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.lyrics-next strong {
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow: hidden;
-  font-weight: 400;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .lyrics-phrase {
   margin-block: 0.35rem;
   color: var(--lyric-upcoming);
@@ -137,9 +108,9 @@
   scroll-margin-block: 30svh;
   transform-origin: left center;
   transition:
-    background-color var(--t-2) var(--ease-out),
-    color var(--t-3) var(--ease-out),
-    text-shadow var(--t-3) var(--ease-out),
+    background-color 140ms var(--ease-out),
+    color 140ms var(--ease-out),
+    text-shadow 140ms var(--ease-out),
     transform var(--t-4) var(--ease-spring);
 }
 
@@ -161,14 +132,7 @@
 }
 
 .lyrics-line.active {
-  --line-progress: 0%;
-
-  background-image: linear-gradient(
-    90deg,
-    var(--lyric-wash) 0 var(--line-progress),
-    transparent var(--line-progress)
-  );
-  background-repeat: no-repeat;
+  background-color: var(--lyric-wash);
   color: var(--lyric-active);
   text-shadow: var(--lyric-glow);
   -webkit-text-stroke: 0.012em currentColor;

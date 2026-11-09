@@ -6,7 +6,16 @@ export function parseLRC(content) {
     const matches = [
       ...line.matchAll(/\[(\d{2}):(\d{2})(?:\.(\d{1,3}))?\]/g),
     ];
-    const text = line.replace(/\[\d{2}:\d{2}(?:\.\d{1,3})?\]/g, '').trim();
+    const text = line
+      .replace(/\[\d{2}:\d{2}(?:\.\d{1,3})?\]/g, '')
+      .replace(/<\d{2}:\d{2}(?:\.\d{1,3})?>/g, '')
+      .trim();
+    const endMatch = /<(\d{2}):(\d{2})(?:\.(\d{1,3}))?>/.exec(line);
+    const end = endMatch
+      ? Number(endMatch[1]) * 60 +
+        Number(endMatch[2]) +
+        (endMatch[3] ? Number(`0.${endMatch[3]}`) : 0)
+      : null;
 
     if (!matches.length && text) {
       plainText.push(text);
@@ -18,6 +27,7 @@ export function parseLRC(content) {
       parsed.push({
         time: Number(match[1]) * 60 + Number(match[2]) + fraction,
         text,
+        ...(Number.isFinite(end) ? { end } : {}),
       });
     });
   });

@@ -24,7 +24,7 @@
   <link rel="preload" href="styles/motion.css" as="style">
   <link rel="preload" href="styles/utilities.css" as="style">
   <link rel="stylesheet" href="styles/app.css">
-  <script>
+      <script>
     (function () {
       var root = document.documentElement;
       try {
@@ -36,6 +36,12 @@
         }
       } catch (error) {
         root.dataset.theme = 'signal';
+      }
+      try {
+        var mode = window.localStorage.getItem('karaoke:mode');
+        root.dataset.mode = mode === 'dark' ? 'dark' : 'light';
+      } catch (error) {
+        root.dataset.mode = 'light';
       }
       try {
         if (window.sessionStorage.getItem('karaoke:intro-seen') === '1') {

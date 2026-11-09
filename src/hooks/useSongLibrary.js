@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { fetchSongs, recordSongPlay } from '../lib/api.js';
 import {
-  FILTER_FIELDS,
-  getMetadataOptions,
-  getSongMetadata,
+  buildFilterFields,
+  songMatchesFilter,
 } from '../lib/songMetadata.js';
 
 const EMPTY_FILTERS = { genre: '', language: '', decade: '' };
@@ -78,15 +77,15 @@ export function useSongLibrary() {
     return () => window.clearTimeout(timer);
   }, [loadSongs, query]);
 
-  const filteredSongs = useMemo(() => {
-    return loadedSongs.filter((song) => {
-      const metadata = getSongMetadata(song);
+  const filterFields = useMemo(() => buildFilterFields(allSongs), [allSongs]);
 
-      return FILTER_FIELDS.every(
-        ({ field }) => !filters[field] || metadata[field] === filters[field]
-      );
-    });
-  }, [filters, loadedSongs]);
+  const filteredSongs = useMemo(() => {
+    return loadedSongs.filter((song) =>
+      filterFields.every((filterField) =>
+        songMatchesFilter(song, filterField, filters[filterField.field])
+      )
+    );
+  }, [filterFields, filters, loadedSongs]);
 
   const recommendations = useMemo(() => {
     return allSongs
@@ -142,10 +141,7 @@ export function useSongLibrary() {
     allSongs,
     filters,
     filtersActive,
-    filterOptions: FILTER_FIELDS.map((field) => ({
-      ...field,
-      options: getMetadataOptions(field.field),
-    })),
+    filterOptions: filterFields,
     filteredSongs,
     isLoading,
     isError,
