@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 2 : 4,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
-    baseURL: 'http://127.0.0.1:8123',
+    baseURL: 'http://localhost:8000',
     locale: 'pl-PL',
     timezoneId: 'Europe/Warsaw',
     colorScheme: 'light',
@@ -44,8 +44,8 @@ export default defineConfig({
     }
   ],
   webServer: {
-    command: 'php -S 127.0.0.1:8123 -t .',
-    url: 'http://127.0.0.1:8123',
+    command: 'php -S localhost:8000',
+    url: 'http://localhost:8000',
     reuseExistingServer: true,
     timeout: 30_000,
     stdout: 'ignore',

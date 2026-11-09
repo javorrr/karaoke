@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { flushSync } from 'react-dom';
 import { Header } from './components/Header.jsx';
 import { LibraryView } from './components/LibraryView.jsx';
 import { PlayerView } from './components/PlayerView.jsx';
@@ -12,6 +13,7 @@ export default function App() {
   const player = useAudioPlayer();
   const [view, setView] = useState('library');
   const [activeSong, setActiveSong] = useState(null);
+  const [transitionSongId, setTransitionSongId] = useState(null);
   const startViewTransition = useViewTransition();
   const lyrics = useLyrics({
     song: activeSong,
@@ -23,8 +25,12 @@ export default function App() {
     const canonicalSong =
       library.allSongs.find((candidate) => candidate.id === song.id) ?? song;
 
-    player.load(canonicalSong);
-    setActiveSong(canonicalSong);
+    flushSync(() => {
+      setTransitionSongId(canonicalSong.id);
+      player.load(canonicalSong);
+      setActiveSong(canonicalSong);
+    });
+
     library.recordPlay(canonicalSong).catch((error) => {
       player.setError(error.message);
     });
@@ -42,7 +48,7 @@ export default function App() {
     });
   };
 
-  return (
+ return (
     <>
       <a className="skip-link" href="#main-content">
         Przejdź do treści
@@ -53,10 +59,14 @@ export default function App() {
           hidden={view !== 'library'}
           library={library}
           onSelect={openSong}
+          activeSongId={activeSong?.id}
+          isPlaying={player.isPlaying}
+          transitionSongId={transitionSongId}
         />
         <PlayerView
           activeSong={activeSong}
           hidden={view !== 'player'}
+          isPlaying={player.isPlaying}
           lyrics={lyrics}
           onBack={openLibrary}
           player={player}

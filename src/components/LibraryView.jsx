@@ -4,7 +4,14 @@ import { Filters } from './Filters.jsx';
 import { Recommendations } from './Recommendations.jsx';
 import { SongList } from './SongList.jsx';
 
-export function LibraryView({ hidden, library, onSelect }) {
+export function LibraryView({
+  hidden,
+  library,
+  onSelect,
+  activeSongId,
+  isPlaying,
+  transitionSongId,
+}) {
   return (
     <section
       id="library-view"
@@ -40,6 +47,9 @@ export function LibraryView({ hidden, library, onSelect }) {
         songs={library.filteredSongs}
         isLoading={library.isLoading}
         onSelect={onSelect}
+        activeId={activeSongId}
+        isPlaying={isPlaying}
+        transitionSongId={transitionSongId}
       />
 
       <p

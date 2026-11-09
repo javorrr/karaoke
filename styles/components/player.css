@@ -1,15 +1,49 @@
 /* ==========================================================================
    KARAOKE — PLAYER
    Lights down. The title becomes the room; controls stay quiet.
+   The accent, glow and lyric highlight all come from the active preset.
    ========================================================================== */
 
 .player-view {
+  position: relative;
+  isolation: isolate;
   container-type: inline-size;
   container-name: player;
 }
 
 .player-view:not([hidden]) {
   padding-block-start: clamp(1rem, 3vw, 2rem);
+}
+
+/* ---- Ambient room glow ------------------------------------------------- */
+.player-view::before {
+  position: absolute;
+  inset: -6rem 0 auto;
+  z-index: -1;
+  height: 42rem;
+  background:
+    radial-gradient(
+      48% 46% at 16% 10%,
+      color-mix(in oklab, var(--accent) 22%, transparent),
+      transparent 72%
+    ),
+    radial-gradient(
+      42% 42% at 88% 22%,
+      color-mix(in oklab, var(--accent) 12%, transparent),
+      transparent 74%
+    );
+  filter: blur(46px);
+  opacity: 0.62;
+  animation: ambient-breathe 7s var(--ease-in-out) infinite;
+  animation-play-state: paused;
+  transition: opacity var(--t-4) var(--ease-out);
+  content: "";
+  pointer-events: none;
+}
+
+.player-view[data-playing="true"]::before {
+  animation-play-state: running;
+  opacity: 1;
 }
 
 .player-topline {
@@ -23,6 +57,7 @@
 
 .back-button {
   display: inline-flex;
+  min-height: 2.75rem;
   align-items: center;
   gap: 0.35rem;
   padding-block: 0.35rem;
@@ -33,17 +68,21 @@
   letter-spacing: 0.04em;
   transition:
     color var(--t-fast) var(--ease-out),
-    border-color var(--t-fast) var(--ease-out);
+    border-color var(--t-fast) var(--ease-out),
+    transform var(--t-fast) var(--ease-out);
 }
 
 .back-button:hover {
   border-color: var(--accent);
   color: var(--accent);
+  transform: translateX(-2px);
 }
 
 /* ---- Panel ------------------------------------------------------------- */
 .player-panel {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
   gap: var(--space-xl);
   padding-block: clamp(2rem, 5vw, 4rem);
 }
@@ -78,6 +117,124 @@
   letter-spacing: 0.01em;
 }
 
+/* ---- Cover ------------------------------------------------------------- */
+.player-cover {
+  --cover-scale: 1;
+
+  position: relative;
+  width: min(58vw, 15rem);
+  aspect-ratio: 1;
+  justify-self: start;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(
+      circle at 30% 18%,
+      color-mix(in oklab, var(--cover-c) 72%, transparent),
+      transparent 58%
+    ),
+    linear-gradient(145deg, var(--cover-a), var(--cover-b));
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.18),
+    var(--shadow-lift);
+  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transform-style: preserve-3d;
+  transition:
+    transform var(--t-3) var(--ease-out),
+    box-shadow var(--t-4) var(--ease-out);
+}
+
+.player-cover::before {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.06) 0 1px,
+      transparent 1px 4px
+    ),
+    linear-gradient(160deg, transparent 40%, rgb(0 0 0 / 0.28));
+  opacity: 0.65;
+  content: "";
+}
+
+.player-cover-orbit {
+  position: absolute;
+  inset: 9%;
+  border: 1px dashed rgb(255 255 255 / 0.3);
+  border-radius: 50%;
+  animation: cover-spin 28s linear infinite;
+  animation-play-state: paused;
+}
+
+.player-view[data-playing="true"] .player-cover-orbit {
+  animation-play-state: running;
+}
+
+.player-cover-monogram {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--cover-ink);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 7vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+}
+
+.player-cover-eq {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  display: flex;
+  height: 1.35rem;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.player-cover-eq i {
+  width: 3px;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--cover-ink);
+  opacity: 0.82;
+  transform: scaleY(0.28);
+  transform-origin: bottom;
+}
+
+.player-cover-eq i:nth-child(2) {
+  animation-delay: 140ms;
+}
+
+.player-cover-eq i:nth-child(3) {
+  animation-delay: 280ms;
+}
+
+.player-view[data-playing="true"] .player-cover-eq i {
+  animation: equalizer-bar 820ms var(--ease-in-out) infinite alternate;
+}
+
+/* Scale/fade fallback when the browser has no View Transitions. */
+@supports not (view-transition-name: none) {
+  @media (prefers-reduced-motion: no-preference) {
+    .player-view:not([hidden]) .player-cover {
+      transition:
+        opacity var(--t-4) var(--ease-out),
+        scale var(--t-4) var(--ease-spring-linear),
+        transform var(--t-3) var(--ease-out),
+        box-shadow var(--t-4) var(--ease-out);
+    }
+
+    @starting-style {
+      .player-view:not([hidden]) .player-cover {
+        opacity: 0;
+        scale: 0.88;
+      }
+    }
+  }
+}
+
 /* ---- Controls ---------------------------------------------------------- */
 .player-controls {
   display: grid;
@@ -95,6 +252,10 @@
 }
 
 .play-button {
+  --magnet-x: 0px;
+  --magnet-y: 0px;
+  --press: 1;
+
   display: inline-flex;
   min-height: 3rem;
   align-items: center;
@@ -108,25 +269,42 @@
   font-size: var(--step-0);
   font-weight: 700;
   letter-spacing: -0.01em;
+  transform: translate(var(--magnet-x), var(--magnet-y)) scale(var(--press));
   transition:
     background-color var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out),
     transform var(--t-fast) var(--ease-out);
 }
 
 .play-button:hover {
+  --press: 1.02;
+
   background: color-mix(in oklab, var(--accent) 86%, var(--text));
-  transform: scale(1.02);
+  box-shadow: 0 12px 28px -18px var(--accent);
 }
 
 .play-button:active {
-  transform: scale(0.97);
+  --press: 0.96;
+}
+
+.play-icon {
+  position: relative;
+  display: inline-grid;
+  width: 0.9em;
+  height: 0.95em;
+  flex: 0 0 auto;
+  place-items: center;
 }
 
 .play-glyph,
 .pause-glyph {
   display: inline-block;
-  flex: 0 0 auto;
+  grid-area: 1 / 1;
   transform-origin: center;
+  transition:
+    clip-path var(--t-2) var(--ease-out),
+    opacity var(--t-1) var(--ease-out),
+    transform var(--t-2) var(--ease-spring);
 }
 
 .play-glyph {
@@ -142,7 +320,15 @@
   border-inline: 0.22em solid currentColor;
 }
 
+.play-button[data-playing="false"] .pause-glyph,
+.play-button[data-playing="true"] .play-glyph {
+  clip-path: inset(50%);
+  opacity: 0;
+  transform: scale(0.45) rotate(-90deg);
+}
+
 .secondary-button {
+  min-height: 2.75rem;
   padding: 0.58rem 0.8rem;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-pill);
@@ -160,10 +346,11 @@
 .secondary-button:hover {
   border-color: var(--accent);
   color: var(--accent);
+  transform: translateY(-1px);
 }
 
 .secondary-button:active {
-  transform: translateY(1px);
+  transform: translateY(1px) scale(0.98);
 }
 
 /* ---- Timeline ---------------------------------------------------------- */
@@ -189,6 +376,9 @@
   background: transparent;
   cursor: pointer;
   appearance: none;
+  transition:
+    --progress var(--t-1) linear,
+    --buffered var(--t-3) linear;
 }
 
 .timeline input[type="range"]::-webkit-slider-runnable-track {
@@ -219,6 +409,12 @@
   background: var(--accent);
   box-shadow: 0 0 0 1px var(--accent);
   appearance: none;
+  transition: transform var(--t-2) var(--ease-spring);
+}
+
+.timeline input[type="range"]:hover::-webkit-slider-thumb,
+.timeline input[type="range"]:focus-visible::-webkit-slider-thumb {
+  transform: scale(1.28);
 }
 
 .timeline input[type="range"]::-moz-range-track {
@@ -239,6 +435,11 @@
   border: 3px solid var(--surface);
   border-radius: 50%;
   background: var(--accent);
+  transition: transform var(--t-2) var(--ease-spring);
+}
+
+.timeline input[type="range"]:hover::-moz-range-thumb {
+  transform: scale(1.28);
 }
 
 .timeline input[type="range"]:disabled {
@@ -269,6 +470,7 @@
   background: transparent;
   cursor: pointer;
   appearance: none;
+  transition: --volume var(--t-1) linear;
 }
 
 .volume-control input[type="range"]::-webkit-slider-runnable-track {
@@ -289,6 +491,12 @@
   border-radius: 50%;
   background: var(--text);
   appearance: none;
+  transition: transform var(--t-2) var(--ease-spring);
+}
+
+.volume-control input[type="range"]:hover::-webkit-slider-thumb,
+.volume-control input[type="range"]:focus-visible::-webkit-slider-thumb {
+  transform: scale(1.28);
 }
 
 .volume-control input[type="range"]::-moz-range-track {
@@ -309,9 +517,15 @@
   border: 2px solid var(--surface);
   border-radius: 50%;
   background: var(--text);
+  transition: transform var(--t-2) var(--ease-spring);
+}
+
+.volume-control input[type="range"]:hover::-moz-range-thumb {
+  transform: scale(1.28);
 }
 
 .icon-button {
+  min-height: 2.75rem;
   padding: 0.4rem 0.65rem;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-pill);
@@ -323,13 +537,18 @@
   text-transform: uppercase;
   transition:
     border-color var(--t-fast) var(--ease-out),
-    color var(--t-fast) var(--ease-out);
+    color var(--t-fast) var(--ease-out),
+    transform var(--t-fast) var(--ease-out);
 }
 
 .icon-button:hover,
 .icon-button[aria-pressed="true"] {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+.icon-button:active {
+  transform: scale(0.96);
 }
 
 .select-control {
@@ -344,6 +563,7 @@
 }
 
 .select-control select {
+  min-height: 2.4rem;
   padding: 0.35rem 0.5rem;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-sm);
@@ -352,15 +572,19 @@
   font-family: var(--font-mono);
   font-size: var(--step--2);
   cursor: pointer;
-  transition: border-color var(--t-fast) var(--ease-out);
+  transition:
+    border-color var(--t-fast) var(--ease-out),
+    background-color var(--t-fast) var(--ease-out);
 }
 
 .select-control select:hover {
   border-color: var(--accent);
+  background: var(--surface);
 }
 
 .toggle-control {
   display: flex;
+  min-height: 2.75rem;
   align-items: center;
   gap: 0.5rem;
   color: var(--text-muted);
@@ -395,7 +619,7 @@
   border-radius: 50%;
   background: var(--text);
   transform: translateY(-50%);
-  transition: transform var(--t-base) var(--ease-out);
+  transition: transform var(--t-base) var(--ease-spring);
   content: "";
 }
 
@@ -410,7 +634,17 @@
 }
 
 /* ---- Container --------------------------------------------------------- */
-@container player (min-width: 48rem) {
+@container player (min-width: 42rem) {
+  .player-panel {
+    grid-template-columns: minmax(12rem, 18rem) minmax(0, 1fr);
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+
+  .player-cover {
+    width: 100%;
+  }
+
   .player-details {
     max-width: 46rem;
   }
@@ -422,5 +656,11 @@
 
   .player-controls {
     gap: var(--space-xl);
+  }
+}
+
+@media (min-width: 901px) {
+  .player-cover {
+    max-width: 20rem;
   }
 }

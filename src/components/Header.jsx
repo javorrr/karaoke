@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { DURATION, EASE } from '../lib/motion.js';
+import { ThemeSwitcher } from './ThemeSwitcher.jsx';
 
 export function Header() {
   const reduceMotion = useReducedMotion();
@@ -23,10 +24,13 @@ export function Header() {
             karaoke<span className="brand-dot">.</span>
           </span>
         </a>
-        <nav className="header-nav" aria-label="Główna nawigacja">
-          <a href="#songs-list">Biblioteka</a>
-          <a href="#recommendations">Na dziś</a>
-        </nav>
+        <div className="header-actions">
+          <nav className="header-nav" aria-label="Główna nawigacja">
+            <a href="#songs-list">Biblioteka</a>
+            <a href="#recommendations">Na dziś</a>
+          </nav>
+          <ThemeSwitcher />
+        </div>
       </div>
     </motion.header>
   );

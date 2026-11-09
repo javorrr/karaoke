@@ -31,11 +31,13 @@ export function Hero() {
         <motion.p className="eyebrow" variants={item}>
           Karaoke, bez pośpiechu
         </motion.p>
-        <motion.h1 id="library-title" variants={item}>
+        {/* The headline paints immediately so it can be the LCP candidate;
+            the supporting lines still join the entrance stagger. */}
+        <h1 id="library-title">
           Twój głos.
           <br />
           <span className="accent">Twój moment.</span>
-        </motion.h1>
+        </h1>
         <motion.p className="intro-copy" variants={item}>
           Znajdź numer, który brzmi jak Ty. Wciśnij play i przejmij scenę.
         </motion.p>

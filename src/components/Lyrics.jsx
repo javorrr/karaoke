@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { DURATION, EASE, STAGGER } from '../lib/motion.js';
 
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
 const phraseVariants = {
   hidden: { opacity: 0, y: 8 },
   visible: {
@@ -13,6 +15,8 @@ const phraseVariants = {
 
 export function Lyrics({
   activeIndex,
+  currentTime = 0,
+  duration = 0,
   follow,
   onSeek,
   phrases,
@@ -43,6 +47,28 @@ export function Lyrics({
     });
   }, [activeIndex, follow, phrases, reduceMotion]);
 
+  const flatLines = phrases.flat();
+  const activeLine = flatLines.find((line) => line.index === activeIndex);
+  const nextLine = activeLine
+    ? flatLines[flatLines.indexOf(activeLine) + 1]
+    : flatLines[0];
+
+  const activeProgress = activeLine
+    ? (() => {
+        const next = flatLines[flatLines.indexOf(activeLine) + 1];
+        const end = Number.isFinite(next?.time)
+          ? next.time
+          : Number.isFinite(duration) && duration > 0
+            ? duration
+            : activeLine.time + 1;
+        const span = end - activeLine.time;
+
+        if (!Number.isFinite(span) || span <= 0) return 0;
+
+        return clamp((currentTime - activeLine.time) / span, 0, 1);
+      })()
+    : 0;
+
   const seekFromLine = (line) => {
     if (Number.isFinite(line.time)) {
       onSeek(line.time);
@@ -57,56 +83,75 @@ export function Lyrics({
   };
 
   return (
-    <div
-      id="lyrics-display"
-      aria-live="polite"
-      data-testid="lyrics-display"
-      ref={displayRef}
-    >
-      {status === 'error' && 'Nie udało się pobrać tekstu.'}
-      {status === 'empty' && 'Brak zsynchronizowanego tekstu.'}
-      {status === 'ready' && (
-        <motion.div
-          initial={reduceMotion ? false : 'hidden'}
-          animate="visible"
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: STAGGER } },
-          }}
-        >
-          {phrases.map((phrase, phraseIndex) => (
-            <motion.div
-              className="lyrics-phrase"
-              key={`${phrase[0]?.index ?? phraseIndex}-${phraseIndex}`}
-              variants={phraseVariants}
-            >
-              {phrase.map((line) => {
-                const isActive = line.index === activeIndex;
-                const isTimed = Number.isFinite(line.time);
-
-                return (
-                  <span
-                    className={`lyrics-line${isActive ? ' active' : ''}`}
-                    key={line.index}
-                    role={isTimed ? 'button' : undefined}
-                    tabIndex={isTimed ? 0 : undefined}
-                    data-time={isTimed ? String(line.time) : undefined}
-                    aria-label={isTimed ? `Przewiń do: ${line.text}` : undefined}
-                    aria-current={isActive ? 'true' : undefined}
-                    onClick={() => seekFromLine(line)}
-                    onKeyDown={(event) => handleKeyDown(event, line)}
-                    ref={(element) => {
-                      lineRefs.current[line.index] = element;
-                    }}
-                  >
-                    {line.text}{' '}
-                  </span>
-                );
-              })}
-            </motion.div>
-          ))}
-        </motion.div>
+    <div className="lyrics-stage">
+      {status === 'ready' && nextLine && activeIndex >= 0 && (
+        <p className="lyrics-next" aria-hidden="true">
+          <span>Następnie</span>
+          <strong>{nextLine.text}</strong>
+        </p>
       )}
+      <div
+        id="lyrics-display"
+        aria-live="polite"
+        data-testid="lyrics-display"
+        ref={displayRef}
+      >
+        {status === 'error' && 'Nie udało się pobrać tekstu.'}
+        {status === 'empty' && 'Brak zsynchronizowanego tekstu.'}
+        {status === 'ready' && (
+          <motion.div
+            initial={reduceMotion ? false : 'hidden'}
+            animate="visible"
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: STAGGER } },
+            }}
+          >
+            {phrases.map((phrase, phraseIndex) => (
+              <motion.div
+                className="lyrics-phrase"
+                key={`${phrase[0]?.index ?? phraseIndex}-${phraseIndex}`}
+                variants={phraseVariants}
+              >
+                {phrase.map((line) => {
+                  const isActive = line.index === activeIndex;
+                  const isTimed = Number.isFinite(line.time);
+                  const state = isActive
+                    ? 'active'
+                    : line.index < activeIndex
+                      ? 'past'
+                      : 'upcoming';
+
+                  return (
+                    <span
+                      className={`lyrics-line ${state}`}
+                      key={line.index}
+                      role={isTimed ? 'button' : undefined}
+                      tabIndex={isTimed ? 0 : undefined}
+                      data-time={isTimed ? String(line.time) : undefined}
+                      data-state={state}
+                      aria-label={isTimed ? `Przewiń do: ${line.text}` : undefined}
+                      aria-current={isActive ? 'true' : undefined}
+                      style={
+                        isActive
+                          ? { '--line-progress': `${activeProgress * 100}%` }
+                          : undefined
+                      }
+                      onClick={() => seekFromLine(line)}
+                      onKeyDown={(event) => handleKeyDown(event, line)}
+                      ref={(element) => {
+                        lineRefs.current[line.index] = element;
+                      }}
+                    >
+                      {line.text}{' '}
+                    </span>
+                  );
+                })}
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 }

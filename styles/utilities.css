@@ -72,8 +72,10 @@ main:focus {
   .filters-panel,
   .recommended-song,
   .song-row,
+  .song-cover,
   .play-button,
   .sing-button,
+  .theme-option,
   .reset-filters,
   .secondary-button,
   .icon-button,
@@ -89,6 +91,7 @@ main:focus {
     outline: 2px solid Highlight;
   }
 
+  .lyrics-line,
   .lyrics-phrase {
     color: CanvasText;
   }
@@ -129,14 +132,22 @@ main:focus {
 
   .site-header,
   .skip-link,
+  .intro-curtain,
+  .theme-switcher,
   .search-box,
   .filters-panel,
   .recommendations,
   .list-heading .song-count,
+  .song-cover,
+  .song-index,
+  .song-duration,
+  .song-skeleton,
   .sing-button,
   .back-button,
+  .player-cover,
   .player-controls,
   .lyrics-hint,
+  .lyrics-next,
   .status-message {
     display: none;
   }

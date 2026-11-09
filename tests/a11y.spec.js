@@ -63,6 +63,26 @@ test.describe('accessibility', () => {
     expect(await analyze(page)).toEqual([]);
   });
 
+  test('all three presets stay clean in the library and the player', async ({
+    page,
+  }) => {
+    for (const theme of ['signal', 'jade', 'cobalt']) {
+      await gotoLibrary(page);
+      await page.locator(`[data-testid="theme-${theme}"]`).click();
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+
+      expect(await analyze(page), `${theme} library`).toEqual([]);
+
+      await openPlayer(page);
+      await page.locator('#play-button').click();
+      await page.locator('.lyrics-line').nth(2).click();
+      await expect(page.locator('.pause-glyph')).toBeVisible();
+      await expect(page.locator('.lyrics-line').nth(2)).toHaveClass(/active/);
+
+      expect(await analyze(page), `${theme} player`).toEqual([]);
+    }
+  });
+
   test('exposes the language, landmarks, headings and skip target', async ({
     page,
   }) => {

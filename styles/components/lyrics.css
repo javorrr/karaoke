@@ -1,6 +1,8 @@
 /* ==========================================================================
    KARAOKE — LYRICS
-   A quiet teleprompter: phrases dim, the current line finds the light.
+   A teleprompter with one clear voice: the active line grows, gains weight,
+   picks up the preset accent and sweeps as the phrase is sung. Dim lines stay
+   readable (above 4.5:1) and never compete.
    ========================================================================== */
 
 .lyrics-container {
@@ -30,10 +32,25 @@
   letter-spacing: 0.04em;
 }
 
+.lyrics-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  gap: var(--space-xs);
+}
+
+.lyrics-stage > * {
+  min-width: 0;
+}
+
 #lyrics-display {
-  max-height: 52svh;
+  position: relative;
+  max-height: min(58svh, 34rem);
   overflow-y: auto;
-  padding-block: 24%;
+  /* The scroller needs half a viewport of breathing room above and below so
+     any lyric can sit on the centre line. Percentages here would resolve
+     against the width and swallow the whole box on desktop. */
+  padding-block: calc(29svh - 1.4em);
   scroll-behavior: smooth;
   mask-image: linear-gradient(
     to bottom,
@@ -66,31 +83,72 @@
   background: color-mix(in oklab, var(--text) 26%, transparent);
 }
 
+/* A quiet preview of what is coming; hidden from the live region. */
+.lyrics-next {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-height: 1.5rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: 0.03em;
+  pointer-events: none;
+}
+
+.lyrics-next span {
+  flex: 0 0 auto;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.lyrics-next strong {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 400;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .lyrics-phrase {
   margin-block: 0.35rem;
-  color: color-mix(in oklab, var(--text) 38%, transparent);
+  color: var(--lyric-upcoming);
   font-family: var(--font-display);
-  font-size: clamp(1.35rem, 3.2vw, 2.2rem);
+  font-size: var(--step-3);
   font-weight: 700;
   letter-spacing: -0.03em;
-  line-height: 1.2;
+  line-height: 1.24;
   text-wrap: pretty;
-  transition: color 260ms var(--ease-out);
+  transition: color var(--t-3) var(--ease-out);
 }
 
 .lyrics-phrase:has(.active) {
-  color: var(--text);
+  color: var(--lyric-active);
 }
 
 .lyrics-line {
-  display: inline;
-  padding: 0.02em 0.06em;
+  display: inline-block;
+  padding: 0.02em 0.08em;
   border-radius: var(--radius-xs);
+  color: var(--lyric-upcoming);
   cursor: pointer;
   scroll-margin-block: 30svh;
+  transform-origin: left center;
   transition:
-    background-color var(--t-base) var(--ease-out),
-    color var(--t-base) var(--ease-out);
+    background-color var(--t-2) var(--ease-out),
+    color var(--t-3) var(--ease-out),
+    text-shadow var(--t-3) var(--ease-out),
+    transform var(--t-4) var(--ease-spring);
+}
+
+.lyrics-line.past {
+  color: var(--lyric-dim);
+}
+
+.lyrics-line.upcoming {
+  color: var(--lyric-upcoming);
 }
 
 .lyrics-line:hover {
@@ -103,17 +161,38 @@
 }
 
 .lyrics-line.active {
-  background: color-mix(in oklab, var(--accent) 18%, transparent);
-  color: var(--text);
+  --line-progress: 0%;
+
+  background-image: linear-gradient(
+    90deg,
+    var(--lyric-wash) 0 var(--line-progress),
+    transparent var(--line-progress)
+  );
+  background-repeat: no-repeat;
+  color: var(--lyric-active);
+  text-shadow: var(--lyric-glow);
+  -webkit-text-stroke: 0.012em currentColor;
+  transform: scale(var(--lyric-scale));
+  will-change: transform;
+}
+
+.lyrics-line.active:hover {
+  color: var(--lyric-active);
 }
 
 @media (min-width: 641px) {
   #lyrics-display {
-    max-height: min(58svh, 34rem);
-    padding-block: 18%;
+    max-height: 52svh;
+    padding-block: calc(26svh - 1.4em);
   }
 
   .lyrics-phrase {
-    font-size: var(--step-3);
+    font-size: clamp(1.35rem, 3.2vw, 2.2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lyrics-line.active {
+    transform: none;
   }
 }

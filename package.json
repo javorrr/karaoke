@@ -7,7 +7,8 @@
   "scripts": {
     "build": "esbuild src/main.jsx --bundle --format=esm --target=es2020 --jsx=automatic --minify --outfile=js/app.bundle.js",
     "build:watch": "esbuild src/main.jsx --bundle --format=esm --target=es2020 --jsx=automatic --outfile=js/app.bundle.js --watch",
-    "serve": "php -S 127.0.0.1:8123 -t .",
+    "db:init": "php db/init.php",
+    "serve": "php -S localhost:8000",
     "pretest": "npm run build",
     "test": "playwright test",
     "test:update": "playwright test --update-snapshots",
@@ -15,12 +16,14 @@
     "test:a11y": "playwright test tests/a11y.spec.js",
     "test:visual": "playwright test tests/visual.spec.js",
     "test:report": "playwright show-report",
-    "lighthouse": "lighthouse http://127.0.0.1:8123 --chrome-path=\"C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe\" --only-categories=performance,accessibility,best-practices,seo --output=json --output-path=.artifacts/lighthouse.json --chrome-flags=\"--headless=new\""
+    "lighthouse": "cross-env CHROME_PATH=\"C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe\" lighthouse http://localhost:8000 --only-categories=performance,accessibility,best-practices,seo --output=json --output-path=.artifacts/lighthouse.json --chrome-flags=\"--headless=new\""
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",
     "@playwright/test": "^1.65.0",
-    "esbuild": "^0.28.2"
+    "cross-env": "^10.1.0",
+    "esbuild": "^0.28.2",
+    "lighthouse": "^13.6.0"
   },
   "dependencies": {
     "motion": "^14.10.1",

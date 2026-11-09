@@ -40,7 +40,24 @@ html {
   min-width: 320px;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  scrollbar-color: color-mix(in oklab, var(--text) 30%, transparent) transparent;
+  scrollbar-width: thin;
   scroll-behavior: smooth;
+}
+
+html::-webkit-scrollbar {
+  width: 10px;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--text) 30%, transparent);
+  background-clip: padding-box;
 }
 
 body {
@@ -154,6 +171,7 @@ strong {
   outline: 3px solid var(--focus);
   outline-offset: 3px;
   border-radius: var(--radius-xs);
+  transition: outline-offset var(--t-1) var(--ease-out);
 }
 
 :focus:not(:focus-visible) {

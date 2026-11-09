@@ -1,4 +1,8 @@
+import { useRef } from 'react';
 import { formatTime } from '../lib/lrc.js';
+import { getCoverStyle, getMonogram } from '../lib/cover.js';
+import { useMagnetic } from '../hooks/useMagnetic.js';
+import { usePointerTilt } from '../hooks/usePointerTilt.js';
 import { Lyrics } from './Lyrics.jsx';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
@@ -14,6 +18,7 @@ function PauseGlyph() {
 export function PlayerView({
   activeSong,
   hidden,
+  isPlaying,
   lyrics,
   onBack,
   player,
@@ -23,6 +28,21 @@ export function PlayerView({
       ? clamp(player.currentTime / player.duration, 0, 1) * 100
       : 0;
 
+  const playButtonRef = useRef(null);
+  const coverRef = useRef(null);
+
+  useMagnetic(playButtonRef, 10);
+  usePointerTilt(coverRef, 5);
+
+  const coverStyle = {
+    ...getCoverStyle(activeSong),
+    /* The shared-element name belongs to the visible cover itself. Naming both
+       the wrapper and an empty child aborts the transition on duplicate names. */
+    viewTransitionName: 'song-cover',
+  };
+
+  const playing = Boolean(isPlaying ?? player.isPlaying);
+
   return (
     <section
       id="player-view"
@@ -30,6 +50,7 @@ export function PlayerView({
       hidden={hidden}
       aria-labelledby="player-title"
       data-testid="player-view"
+      data-playing={playing ? 'true' : 'false'}
     >
       <div className="player-topline">
         <button
@@ -45,6 +66,24 @@ export function PlayerView({
       </div>
 
       <div className="player-panel" data-testid="player-panel">
+        <div
+          className="player-cover"
+          ref={coverRef}
+          aria-hidden="true"
+          data-testid="player-cover"
+          style={coverStyle}
+        >
+          <span className="player-cover-orbit" />
+          <span className="player-cover-monogram">
+            {getMonogram(activeSong)}
+          </span>
+          <span className="player-cover-eq" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+        </div>
+
         <div className="player-details">
           <p className="eyebrow">Teraz grasz</p>
           <h1 id="player-title">{activeSong?.title ?? '-'}</h1>
@@ -68,6 +107,7 @@ export function PlayerView({
               </button>
               <button
                 id="play-button"
+                ref={playButtonRef}
                 className="play-button"
                 type="button"
                 aria-label={
@@ -75,10 +115,14 @@ export function PlayerView({
                     ? 'Pause — wstrzymaj piosenkę'
                     : 'Play — odtwórz piosenkę'
                 }
+                data-playing={player.isPlaying ? 'true' : 'false'}
                 data-testid="play-button"
                 onClick={player.togglePlay}
               >
-                {player.isPlaying ? <PauseGlyph /> : <PlayGlyph />}
+                <span className="play-icon" aria-hidden="true">
+                  <PlayGlyph />
+                  <PauseGlyph />
+                </span>
                 <span>{player.isPlaying ? 'Pause' : 'Play'}</span>
               </button>
               <button
@@ -181,6 +225,8 @@ export function PlayerView({
         </div>
         <Lyrics
           activeIndex={lyrics.activeIndex}
+          currentTime={player.currentTime}
+          duration={player.duration}
           follow={player.follow}
           onSeek={player.seek}
           phrases={lyrics.phrases}
