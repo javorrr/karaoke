@@ -1,3 +1,4 @@
+
 import { fetchSongs } from './api.js';
 import { setupSearch } from './search.js';
 import { createPlayer } from './player.js';
