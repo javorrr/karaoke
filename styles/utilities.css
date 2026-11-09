@@ -1,0 +1,199 @@
+/* ==========================================================================
+   KARAOKE — UTILITIES
+   Hidden, skip link, forced colors, print and noscript.
+   ========================================================================== */
+
+[hidden] {
+  display: none !important;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--z-skip);
+  padding: 0.7rem 1rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.04em;
+  transform: translateY(-140%);
+  transition: transform var(--t-base) var(--ease-out);
+}
+
+.skip-link:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  transform: translateY(0);
+}
+
+main:focus {
+  outline: none;
+}
+
+.noscript-note {
+  max-width: 40ch;
+  margin: var(--space-xl) auto;
+  padding: var(--space-md);
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-align: center;
+}
+
+/* ---- Forced colors ----------------------------------------------------- */
+@media (forced-colors: active) {
+  .site-header::after,
+  .status-message[data-state="loading"]::before {
+    display: none;
+  }
+
+  * {
+    box-shadow: none;
+    text-shadow: none;
+  }
+
+  .brand,
+  .filters-panel,
+  .recommended-song,
+  .song-row,
+  .song-cover,
+  .play-button,
+  .sing-button,
+  .theme-option,
+  .reset-filters,
+  .secondary-button,
+  .icon-button,
+  .select-control select,
+  .toggle-control input,
+  .back-button {
+    border: 1px solid CanvasText;
+  }
+
+  .lyrics-line.active {
+    background: Highlight;
+    color: HighlightText;
+    outline: 2px solid Highlight;
+  }
+
+  .lyrics-line,
+  .lyrics-phrase {
+    color: CanvasText;
+  }
+
+  .accent,
+  .brand-dot,
+  .player-artist {
+    color: LinkText;
+  }
+}
+
+/* ---- Print ------------------------------------------------------------- */
+@media print {
+  :root {
+    --paper: #fff;
+    --paper-raised: #fff;
+    --paper-sunken: #fff;
+    --ink: #000;
+    --ink-soft: #222;
+    --accent: #000;
+    --stage: #fff;
+    --stage-raised: #fff;
+    --cream: #000;
+    --cream-soft: #222;
+    --surface: #fff;
+    --text: #000;
+    --text-muted: #222;
+    --line: #999;
+    --line-strong: #000;
+    --focus: #000;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 11pt;
+  }
+
+  .site-header,
+  .skip-link,
+  .intro-curtain,
+  .theme-switcher,
+  .search-box,
+  .filters-panel,
+  .recommendations,
+  .list-heading .song-count,
+  .song-cover,
+  .song-index,
+  .song-duration,
+  .song-skeleton,
+  .sing-button,
+  .back-button,
+  .player-cover,
+  .player-controls,
+  .lyrics-hint,
+  .lyrics-next,
+  .status-message {
+    display: none;
+  }
+
+  main {
+    padding: 0;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  .hero-layout {
+    min-height: 0;
+    padding: 0 0 1rem;
+    border-bottom: 1px solid #000;
+  }
+
+  .intro h1 {
+    font-size: 28pt;
+  }
+
+  .song-row {
+    break-inside: avoid;
+    border-bottom: 1px solid #000;
+  }
+
+  #lyrics-display {
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+    mask-image: none;
+  }
+
+  .lyrics-phrase {
+    color: #000;
+    font-size: 16pt;
+  }
+
+  .lyrics-line.active {
+    background: transparent;
+    color: #000;
+    outline: 2px solid #000;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+}

@@ -1,0 +1,24 @@
+/* ==========================================================================
+   SCENA — ENTRY POINT
+   Layer order is the specificity budget. Never add rules here.
+
+   Layer order (low → high):
+     tokens → base → layout → components → motion → utilities
+   ========================================================================== */
+
+@layer tokens, base, layout, components, motion, utilities;
+
+@import url("tokens.css") layer(tokens);
+@import url("base.css") layer(base);
+@import url("layout.css") layer(layout);
+@import url("components/header.css") layer(components);
+@import url("components/hero.css") layer(components);
+@import url("components/search.css") layer(components);
+@import url("components/filters.css") layer(components);
+@import url("components/recommendations.css") layer(components);
+@import url("components/songs.css") layer(components);
+@import url("components/player.css") layer(components);
+@import url("components/wake-slider.css") layer(components);
+@import url("components/lyrics.css") layer(components);
+@import url("motion.css") layer(motion);
+@import url("utilities.css") layer(utilities);

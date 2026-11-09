@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Aplikacja karaoke z wyszukiwaniem piosenek i odtwarzaczem">
+  <meta name="theme-color" content="#F7F6F2">
+  <title>Karaoke | Śpiewaj po swojemu</title>
+  <link rel="preload" href="styles/fonts/InstrumentSans-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="styles/fonts/InstrumentSans-Bold.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="styles/fonts/GeistMono-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="modulepreload" href="js/app.bundle.js">
+  <link rel="preload" href="styles/tokens.css" as="style">
+  <link rel="preload" href="styles/base.css" as="style">
+  <link rel="preload" href="styles/layout.css" as="style">
+  <link rel="preload" href="styles/components/header.css" as="style">
+  <link rel="preload" href="styles/components/hero.css" as="style">
+  <link rel="preload" href="styles/components/search.css" as="style">
+  <link rel="preload" href="styles/components/filters.css" as="style">
+  <link rel="preload" href="styles/components/recommendations.css" as="style">
+  <link rel="preload" href="styles/components/songs.css" as="style">
+  <link rel="preload" href="styles/components/player.css" as="style">
+  <link rel="preload" href="styles/components/wake-slider.css" as="style">
+  <link rel="preload" href="styles/components/lyrics.css" as="style">
+  <link rel="preload" href="styles/motion.css" as="style">
+  <link rel="preload" href="styles/utilities.css" as="style">
+  <link rel="stylesheet" href="styles/app.css">
+  <script>
+    (function () {
+      var root = document.documentElement;
+      try {
+        var theme = window.localStorage.getItem('karaoke:theme');
+        if (theme === 'signal' || theme === 'jade' || theme === 'cobalt') {
+          root.dataset.theme = theme;
+        } else {
+          root.dataset.theme = 'signal';
+        }
+      } catch (error) {
+        root.dataset.theme = 'signal';
+      }
+      try {
+        var mode = window.localStorage.getItem('karaoke:mode');
+        root.dataset.mode = mode === 'dark' ? 'dark' : 'light';
+      } catch (error) {
+        root.dataset.mode = 'light';
+      }
+      try {
+        if (window.sessionStorage.getItem('karaoke:intro-seen') === '1') {
+          root.classList.add('intro-skip');
+        }
+      } catch (error) {
+        // sessionStorage can be blocked in private modes.
+      }
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        root.classList.add('intro-skip');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <div class="intro-curtain" id="intro-curtain" aria-hidden="true">
+    <p class="intro-brand" aria-hidden="true">karaoke<span>.</span></p>
+    <div class="intro-eq" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <noscript><p class="noscript-note">Ta aplikacja wymaga włączonego JavaScriptu.</p></noscript>
+  <script type="module" src="js/app.bundle.js"></script>
+  <script src="js/intro.js" defer></script>
+</body>
+</html>

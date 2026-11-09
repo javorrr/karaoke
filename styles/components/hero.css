@@ -1,0 +1,18 @@
+/* ==========================================================================
+   KARAOKE — HERO
+   One statement, one supporting line. The headline owns the room.
+   ========================================================================== */
+
+.intro h1 {
+  padding-block-end: 0.06em;
+}
+
+.intro h1 .accent {
+  display: inline-block;
+}
+
+@media (min-width: 901px) {
+  .intro h1 {
+    font-size: clamp(4.5rem, 9vw, 8rem);
+  }
+}

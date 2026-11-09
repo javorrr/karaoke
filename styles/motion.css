@@ -1,0 +1,388 @@
+/* ==========================================================================
+   KARAOKE — MOTION
+   One idea: the interface settles into place. Entrances are React/Motion;
+   CSS owns hover feedback, the loading state, the intro and view transitions.
+
+   Every looping animation is opt-in: it only runs while audio is playing and
+   the tab is visible. Reduced motion keeps colour and weight, drops movement.
+   ========================================================================== */
+
+@keyframes header-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes header-shrink {
+  to {
+    transform: scale(0.94);
+  }
+}
+
+@keyframes status-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.7);
+  }
+}
+
+@keyframes equalizer-bar {
+  from {
+    transform: scaleY(0.22);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes cover-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes skeleton-sweep {
+  from {
+    transform: translateX(-160%);
+  }
+  to {
+    transform: translateX(380%);
+  }
+}
+
+@keyframes intro-curtain {
+  0%,
+  55% {
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+@keyframes intro-brand {
+  from {
+    opacity: 0;
+    transform: translateY(0.6rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes intro-bar {
+  from {
+    transform: scaleY(0.18);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    transform: scale(0.995);
+  }
+}
+
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: scale(1.003);
+  }
+}
+
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0 at var(--reveal-x) var(--reveal-y));
+  }
+  to {
+    clip-path: circle(150vmax at var(--reveal-x) var(--reveal-y));
+  }
+}
+
+@keyframes section-rise {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes row-reveal {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* ---- Page intro -------------------------------------------------------- */
+.intro-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-intro);
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-lg);
+  background: var(--paper);
+  color: var(--ink);
+  clip-path: inset(0 0 0 0);
+  animation: intro-curtain var(--intro-duration) var(--ease-in-out) both;
+  pointer-events: none;
+}
+
+.intro-brand {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 8vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  animation: intro-brand var(--t-4) var(--ease-out) both;
+}
+
+.intro-brand span {
+  color: var(--accent);
+}
+
+.intro-eq {
+  display: flex;
+  height: 2.5rem;
+  align-items: flex-end;
+  gap: 0.35rem;
+}
+
+.intro-eq span {
+  width: 0.35rem;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  transform: scaleY(0.18);
+  transform-origin: bottom;
+  animation: intro-bar 620ms var(--ease-in-out) infinite alternate;
+}
+
+.intro-eq span:nth-child(2) {
+  animation-delay: 90ms;
+}
+
+.intro-eq span:nth-child(3) {
+  animation-delay: 180ms;
+}
+
+.intro-eq span:nth-child(4) {
+  animation-delay: 60ms;
+}
+
+.intro-eq span:nth-child(5) {
+  animation-delay: 240ms;
+}
+
+html.intro-skip .intro-curtain {
+  display: none;
+}
+
+/* ---- Scroll progress --------------------------------------------------- */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .site-header::after {
+      position: absolute;
+      inset-inline: 0;
+      bottom: -1px;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: header-progress linear both;
+      animation-timeline: scroll(root block);
+      content: "";
+      pointer-events: none;
+    }
+
+    .header-content {
+      transform-origin: left center;
+      animation: header-shrink linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 0 18rem;
+    }
+  }
+}
+
+/* ---- Scroll reveal ----------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .song-row[data-revealed="false"] {
+    opacity: 0;
+    translate: 0 10px;
+  }
+
+  .song-row[data-revealed="true"] {
+    animation: row-reveal 220ms var(--ease-out) both;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .list-heading,
+    .lyrics-container {
+      animation: section-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+}
+
+/* ---- Player entrance --------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .player-panel {
+    transition:
+      opacity var(--t-4) var(--ease-spring-linear),
+      translate var(--t-4) var(--ease-spring-linear),
+      scale var(--t-4) var(--ease-spring-linear);
+  }
+
+  @starting-style {
+    .player-view:not([hidden]) .player-panel {
+      opacity: 0;
+      translate: 0 0.85rem;
+      scale: 0.988;
+    }
+  }
+
+  .transport-controls,
+  .timeline,
+  .mixer-controls {
+    transition:
+      opacity var(--t-3) var(--ease-out),
+      translate var(--t-3) var(--ease-out);
+  }
+
+  .timeline {
+    transition-delay: 60ms;
+  }
+
+  .mixer-controls {
+    transition-delay: 120ms;
+  }
+
+  @starting-style {
+    .player-view:not([hidden]) .transport-controls,
+    .player-view:not([hidden]) .timeline,
+    .player-view:not([hidden]) .mixer-controls {
+      opacity: 0;
+      translate: 0 0.55rem;
+    }
+  }
+
+  .status-message[data-state="loading"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .status-message[data-state="loading"]::before {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: status-pulse 1.25s var(--ease-in-out) infinite;
+    content: "";
+  }
+}
+
+/* ---- Pause loops when the tab is hidden -------------------------------- */
+:root[data-page-hidden="true"] .player-cover-orbit,
+:root[data-page-hidden="true"] .player-cover-eq i,
+:root[data-page-hidden="true"] .song-equalizer i {
+  animation-play-state: paused;
+}
+
+/* ---- View transitions -------------------------------------------------- */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: vt-out 160ms var(--ease-in-out) both;
+}
+
+::view-transition-new(root) {
+  animation: vt-in 240ms var(--ease-out) both;
+}
+
+::view-transition-group(song-cover) {
+  animation-duration: var(--t-4);
+  animation-timing-function: var(--ease-spring-linear);
+}
+
+::view-transition-old(song-cover),
+::view-transition-new(song-cover) {
+  animation-duration: var(--t-4);
+}
+
+/* Circular preset reveal from the clicked swatch. */
+html.theme-reveal {
+  transition: none;
+}
+
+html.theme-reveal::view-transition-old(root) {
+  animation: none;
+}
+
+html.theme-reveal::view-transition-new(root) {
+  animation: theme-reveal var(--t-4) var(--ease-out) both;
+}
+
+/* ---- Reduced motion ---------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    transition-delay: 0ms !important;
+  }
+
+  .site-header::after,
+  .status-message[data-state="loading"]::before,
+  .intro-curtain,
+  .intro-brand,
+  .intro-eq span,
+  .player-cover-orbit,
+  .player-cover-eq i,
+  .song-equalizer i,
+  .song-skeleton::after,
+  .header-content,
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-group(song-cover) {
+    animation: none !important;
+  }
+
+  .intro-curtain {
+    display: none;
+  }
+
+  .lyrics-line.active {
+    will-change: auto;
+  }
+}
