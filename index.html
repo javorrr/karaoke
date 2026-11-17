@@ -16,7 +16,12 @@
         <span class="brand-mark" aria-hidden="true">♪</span>
         <span>Karaoke</span>
       </a>
-      <span class="header-note"><span class="live-dot" aria-hidden="true"></span> Twój głos. Twój moment.</span>
+      <div class="header-actions">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Włącz jasny motyw" aria-pressed="false">
+          <span class="theme-toggle-icon" aria-hidden="true">☀</span>
+          <span class="theme-toggle-label">Jasny motyw</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -121,6 +126,7 @@
     </section>
   </main>
 
+  <script type="module" src="js/theme.js"></script>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

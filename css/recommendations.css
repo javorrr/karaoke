@@ -17,8 +17,8 @@
   gap: 4px;
   padding: 13px 15px;
   border: 1px solid transparent;
-  color: var(--white);
-  background: rgba(23, 21, 26, .45);
+  color: var(--text);
+  background: var(--recommendation-surface);
   text-align: left;
   transition: border-color .2s, transform .2s;
 }
@@ -59,7 +59,7 @@
   font-size: .78rem;
   font-weight: bold;
 }
-.popular-sing-button:hover { color: var(--ink); background: var(--amber); }
+.popular-sing-button:hover { color: var(--accent-text); background: var(--amber); }
 @media (max-width: 760px) { .recommendations { grid-template-columns: 1fr; } }
 @media (max-width: 480px) {
   .popular-song { grid-template-columns: 24px minmax(0, 1fr) auto; }

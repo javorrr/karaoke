@@ -30,7 +30,7 @@ Pliki tekstów zsynchronizowanych należy umieszczać w `songs/lrc/` i nazywać 
 ## Struktura
 
 - `index.html` - główny widok aplikacji
-- `css/style.css` - responsywny, ciemny styl interfejsu
+- `css/style.css` - responsywny styl interfejsu z motywem ciemnym i jasnym
 - `css/filters.css` - style panelu filtrowania repertuaru
 - `css/recommendations.css` - style sekcji polecanych i popularnych utworów
 - `js/api.js` - komunikacja z API
@@ -41,6 +41,7 @@ Pliki tekstów zsynchronizowanych należy umieszczać w `songs/lrc/` i nazywać 
 - `js/search.js` - wyszukiwanie z debounce 300 ms
 - `js/player.js` - sterowanie audio, paskiem postępu, głośnością i tempem
 - `js/app.js` - uruchomienie aplikacji i renderowanie listy
+- `js/theme.js` - przełączanie i zapamiętywanie motywu jasnego/ciemnego
 - `api/songs.php` - endpoint listy i wyszukiwania piosenek
 - `api/audio.php` - strumieniowanie plików audio z obsługą HTTP Range (przewijanie)
 - `api/song-play.php` - globalna, atomowa aktualizacja liczby wyborów utworu
@@ -53,6 +54,9 @@ Panel „Dopasuj repertuar” działa razem z wyszukiwaniem i pozwala zawęzić 
 według gatunku, języka oraz dekady. Metadane utworów są zdefiniowane w
 `js/song-metadata.js`; przy rozbudowie bazy można je przenieść do dodatkowych
 kolumn tabeli `songs` i zwracać z API.
+
+Motyw można zmienić przyciskiem w prawym górnym rogu. Wybrana opcja jest
+zapamiętywana w przeglądarce i obowiązuje także po ponownym otwarciu strony.
 
 Sekcje „Polecane piosenki” i „Najchętniej śpiewane” są budowane z aktualnej
 listy zwróconej przez API. Ranking pokazuje pięć utworów z największą liczbą
