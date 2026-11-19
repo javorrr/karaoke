@@ -1,0 +1,248 @@
+/* ==========================================================================
+   KARAOKE — LAYOUT
+   Container, sticky header, two-view shell, hero and section rhythm.
+   ========================================================================== */
+
+main {
+  position: relative;
+  z-index: var(--z-base);
+  padding-block: clamp(2.5rem, 7svh, 5rem) var(--space-4xl);
+}
+
+.container {
+  width: min(calc(100% - var(--gutter) * 2), var(--container));
+  margin-inline: auto;
+}
+
+/* ---- Header ------------------------------------------------------------ */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in oklab, var(--surface) 88%, transparent);
+  backdrop-filter: blur(16px) saturate(1.05);
+  transition:
+    background-color var(--t-slow) var(--ease-in-out),
+    border-color var(--t-slow) var(--ease-in-out);
+}
+
+.header-content {
+  display: flex;
+  min-height: var(--header-height);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.header-actions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: clamp(0.75rem, 2.5vw, 2rem);
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2.5vw, 2rem);
+  font-size: var(--step--1);
+  transition: opacity var(--t-base) var(--ease-out);
+}
+
+.header-nav a {
+  position: relative;
+  padding-block: 0.35rem;
+  color: var(--text-muted);
+  transition: color var(--t-fast) var(--ease-out);
+}
+
+.header-nav a::after {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--t-base) var(--ease-out);
+  content: "";
+}
+
+.header-nav a:hover,
+.header-nav a:focus-visible {
+  color: var(--text);
+}
+
+.header-nav a:hover::after,
+.header-nav a:focus-visible::after {
+  transform: scaleX(1);
+}
+
+body:has(#player-view:not([hidden])) .header-nav {
+  visibility: hidden;
+  opacity: 0;
+}
+
+/* ---- Two-view shell ---------------------------------------------------- */
+.library-view:not([hidden]),
+.player-view:not([hidden]) {
+  display: block;
+}
+
+.library-view > .search-box {
+  margin-block-start: var(--space-2xl);
+}
+
+.library-view > .filters-panel {
+  margin-block-start: var(--space-lg);
+}
+
+.library-view > .recommendations {
+  margin-block-start: var(--space-2xl);
+}
+
+.library-view > .list-heading {
+  margin-block-start: var(--space-section);
+}
+
+.library-view > .songs-list {
+  margin-block-start: var(--space-xs);
+}
+
+.library-view > .status-message {
+  margin-block-start: var(--space-md);
+}
+
+/* ---- Hero -------------------------------------------------------------- */
+.hero-layout {
+  display: grid;
+  gap: var(--space-xl);
+  padding-block: clamp(1rem, 4svh, 3rem) clamp(2rem, 6svh, 4rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.intro {
+  display: grid;
+  gap: var(--space-md);
+  justify-items: start;
+  max-width: 62rem;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-label);
+  line-height: var(--leading-snug);
+  text-transform: uppercase;
+}
+
+.intro h1 {
+  max-width: 12ch;
+  font-size: clamp(3rem, 13vw, 8rem);
+  line-height: 0.92;
+  text-wrap: balance;
+}
+
+.accent {
+  color: var(--accent);
+}
+
+.intro-copy {
+  max-width: var(--measure);
+  color: var(--text-muted);
+  font-size: var(--step-1);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+/* ---- Section furniture ------------------------------------------------ */
+.list-heading {
+  position: sticky;
+  top: calc(var(--header-height) - 1px);
+  z-index: var(--z-sticky);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  padding-block: var(--space-md);
+  border-top: var(--border-strong) solid var(--line-strong);
+  background: color-mix(in oklab, var(--surface) 92%, transparent);
+  backdrop-filter: blur(14px) saturate(1.05);
+}
+
+.list-heading::after {
+  position: absolute;
+  inset-inline: 0;
+  top: 100%;
+  height: 1.5rem;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--surface) 80%, transparent),
+    transparent
+  );
+  content: "";
+  pointer-events: none;
+}
+
+.list-heading h2 {
+  font-size: var(--step-2);
+}
+
+.song-count {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.status-message {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.02em;
+}
+
+.status-message[data-state="error"] {
+  color: var(--danger);
+}
+
+.status-message:empty {
+  display: none;
+}
+
+/* ---- Responsive -------------------------------------------------------- */
+@media (min-width: 641px) {
+  .header-content {
+    min-height: var(--header-height);
+  }
+
+  .list-heading {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .intro h1 {
+    max-width: 11ch;
+  }
+}
+
+@media (min-width: 901px) {
+  .hero-layout {
+    min-height: clamp(24rem, 58svh, 38rem);
+    align-items: center;
+  }
+
+  .intro {
+    gap: var(--space-lg);
+  }
+
+  .intro-copy {
+    font-size: var(--step-2);
+  }
+}

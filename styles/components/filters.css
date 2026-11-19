@@ -1,0 +1,152 @@
+/* ==========================================================================
+   KARAOKE — FILTERS
+   A quiet index strip, not a card. Hairlines do the grouping.
+   ========================================================================== */
+
+.filters-panel {
+  display: grid;
+  gap: var(--space-lg);
+  padding-block: var(--space-lg);
+  border-block: 1px solid var(--line);
+}
+
+.filters-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-sm);
+}
+
+.filters-title {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-weight: 400;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: end;
+  gap: var(--space-md);
+}
+
+.filter-field {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-2xs);
+}
+
+.filter-field > span {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color var(--t-fast) var(--ease-out);
+}
+
+.filter-field:focus-within > span {
+  color: var(--accent);
+}
+
+.filter-field select {
+  width: 100%;
+  padding: 0.6rem 2rem 0.6rem 0.7rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background-color: var(--surface-raised);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23141414' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 0.65rem;
+  color: var(--text);
+  font-size: var(--step--1);
+  cursor: pointer;
+  appearance: none;
+  transition:
+    background-color var(--t-fast) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out);
+}
+
+.filter-field select:hover {
+  border-color: var(--ink);
+  background-color: var(--surface);
+}
+
+.filter-field select:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Native option menus are OS-drawn; these states apply where the platform
+   exposes them. The selected option reuses the accent token indicator. */
+.filter-field select option {
+  background-color: var(--surface-raised);
+  color: var(--text);
+}
+
+.filter-field select option:checked {
+  background-color: var(--accent);
+  color: var(--accent-contrast);
+}
+
+@supports (selector(option:hover)) {
+  .filter-field select option:hover {
+    background-color: color-mix(in oklab, var(--accent) 16%, var(--surface-raised));
+    color: var(--text);
+  }
+}
+
+.filter-field select option:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.filter-field select option:disabled {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.reset-filters {
+  justify-self: start;
+  padding-block: 0.5rem;
+  border-bottom: 1px solid var(--line-strong);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    color var(--t-fast) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out),
+    opacity var(--t-fast) var(--ease-out);
+}
+
+.reset-filters:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.reset-filters:disabled {
+  opacity: 0.45;
+}
+
+@media (min-width: 641px) {
+  .filters-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 901px) {
+  .filters-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+    gap: var(--space-lg);
+  }
+
+  .reset-filters {
+    justify-self: end;
+  }
+}

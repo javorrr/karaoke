@@ -1,0 +1,166 @@
+/* ==========================================================================
+   KARAOKE — LYRICS
+   A teleprompter with one clear voice: the active line grows, gains weight,
+   picks up the preset accent and sweeps as the phrase is sung. Dim lines stay
+   readable (above 4.5:1) and never compete.
+   ========================================================================== */
+
+.lyrics-container {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  gap: var(--space-md);
+  margin-block-start: var(--space-section);
+  padding-block-start: var(--space-lg);
+  border-top: 1px solid var(--line-strong);
+}
+
+.lyrics-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.lyrics-heading h2 {
+  font-size: var(--step-2);
+}
+
+.lyrics-hint {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: 0.04em;
+}
+
+.lyrics-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  gap: var(--space-xs);
+}
+
+.lyrics-stage > * {
+  min-width: 0;
+}
+
+#lyrics-display {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  max-height: min(58svh, 34rem);
+  overflow-y: auto;
+  /* The scroller needs half a viewport of breathing room above and below so
+     any lyric can sit on the centre line. Percentages here would resolve
+     against the width and swallow the whole box on desktop. */
+  padding-block: calc(29svh - 1.4em);
+  scroll-behavior: smooth;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    black 9%,
+    black 91%,
+    transparent 100%
+  );
+  scrollbar-color: color-mix(in oklab, var(--text) 26%, transparent) transparent;
+  scrollbar-width: thin;
+}
+
+#lyrics-display:not(:has(.lyrics-phrase)) {
+  padding-block: var(--space-xl);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+}
+
+#lyrics-display::-webkit-scrollbar {
+  width: 6px;
+}
+
+#lyrics-display::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#lyrics-display::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--text) 26%, transparent);
+}
+
+.lyrics-phrase {
+  margin-block: 0.35rem;
+  color: var(--lyric-upcoming);
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.24;
+  text-wrap: pretty;
+  transition: color var(--t-3) var(--ease-out);
+}
+
+.lyrics-phrase:has(.active) {
+  color: var(--lyric-active);
+}
+
+.lyrics-line {
+  display: inline-block;
+  padding: 0.02em 0.08em;
+  border-radius: var(--radius-xs);
+  color: var(--lyric-upcoming);
+  cursor: pointer;
+  scroll-margin-block: 30svh;
+  transform-origin: left center;
+  transition:
+    background-color 140ms var(--ease-out),
+    color 140ms var(--ease-out),
+    text-shadow 140ms var(--ease-out),
+    transform var(--t-4) var(--ease-spring);
+}
+
+.lyrics-line.past {
+  color: var(--lyric-dim);
+}
+
+.lyrics-line.upcoming {
+  color: var(--lyric-upcoming);
+}
+
+.lyrics-line:hover {
+  color: var(--accent);
+}
+
+.lyrics-line:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.lyrics-line.active {
+  background-color: var(--lyric-wash);
+  color: var(--lyric-active);
+  text-shadow: var(--lyric-glow);
+  -webkit-text-stroke: 0.012em currentColor;
+  transform: scale(var(--lyric-scale));
+  will-change: transform;
+}
+
+.lyrics-line.active:hover {
+  color: var(--lyric-active);
+}
+
+@media (min-width: 641px) {
+  #lyrics-display {
+    max-height: 52svh;
+    padding-block: calc(26svh - 1.4em);
+  }
+
+  .lyrics-phrase {
+    font-size: clamp(1.35rem, 3.2vw, 2.2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lyrics-line.active {
+    transform: none;
+  }
+}

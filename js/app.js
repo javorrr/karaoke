@@ -1,9 +1,11 @@
+
 import { fetchSongs } from './api.js';
 import { setupSearch } from './search.js';
 import { createPlayer } from './player.js';
 import { createSongFilters } from './filters.js';
 import { createRecommendations } from './recommendations.js';
 import { createPopularityStore } from './popularity.js';
+import { setupThemeToggle } from './theme.js';
 
 const libraryView = document.querySelector('#library-view');
 const playerView = document.querySelector('#player-view');
@@ -20,6 +22,8 @@ const popularity = createPopularityStore(() => {
     recommendations.setSongs(loadedSongs);
   }
 });
+
+setupThemeToggle(document.querySelector('#theme-toggle'));
 
 const player = createPlayer({
   playerTitle: document.querySelector('#player-title'),

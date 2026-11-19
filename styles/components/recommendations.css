@@ -1,0 +1,154 @@
+/* ==========================================================================
+   KARAOKE — RECOMMENDATIONS
+   Three names, ranked by how often they were sung. No duplicate chart.
+   ========================================================================== */
+
+.recommendations:not([hidden]) {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.recommendation-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.recommendation-heading h2 {
+  font-size: var(--step-2);
+}
+
+.recommendation-note {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.recommended-list {
+  display: grid;
+  border-top: 1px solid var(--line-strong);
+}
+
+.recommendation-item {
+  min-width: 0;
+}
+
+.recommended-song {
+  display: grid;
+  width: 100%;
+  grid-template-areas:
+    "title plays"
+    "artist plays";
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.1rem var(--space-sm);
+  padding-block: var(--space-md);
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  text-align: left;
+  transition:
+    background-color var(--t-base) var(--ease-out),
+    transform var(--t-base) var(--ease-out);
+}
+
+.recommendation-song-title {
+  grid-area: title;
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+  transition: transform var(--t-base) var(--ease-out);
+}
+
+.recommendation-song-artist {
+  grid-area: artist;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.recommendation-plays {
+  grid-area: plays;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  transition: color var(--t-base) var(--ease-out);
+}
+
+.recommended-song:active {
+  transform: scale(0.997);
+}
+
+.recommended-song:focus-visible {
+  background: color-mix(in oklab, var(--accent) 5%, transparent);
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.recommended-song:focus-visible .recommendation-song-title {
+  transform: translateX(3px);
+}
+
+.recommended-song:focus-visible .recommendation-plays {
+  color: var(--accent);
+}
+
+@media (hover: hover) {
+  .recommended-song:hover {
+    background: color-mix(in oklab, var(--accent) 5%, transparent);
+  }
+
+  .recommended-song:hover .recommendation-song-title {
+    transform: translateX(3px);
+  }
+
+  .recommended-song:hover .recommendation-plays {
+    color: var(--accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recommended-song,
+  .recommendation-song-title,
+  .recommendation-plays {
+    transition-property: background-color, color;
+  }
+
+  .recommended-song:active,
+  .recommended-song:hover .recommendation-song-title,
+  .recommended-song:focus-visible .recommendation-song-title {
+    transform: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .recommended-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .recommended-song {
+    height: 100%;
+    padding-inline: var(--space-md);
+    border-bottom: 0;
+    border-inline-start: 1px solid var(--line);
+  }
+
+  .recommendation-item:first-child .recommended-song {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+
+  .recommendation-item:last-child .recommended-song {
+    padding-inline-end: 0;
+  }
+}
