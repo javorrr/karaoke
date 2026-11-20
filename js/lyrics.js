@@ -1,5 +1,6 @@
 export function createLyrics(display, { onSeek } = {}) {
   let lines = [];
+  let sourceLines = [];
   let lineElements = [];
   let audioDuration = null;
   let activeTime = null;
@@ -44,26 +45,34 @@ export function createLyrics(display, { onSeek } = {}) {
     return plainText.map(text => ({ time: null, text }));
   }
 
-  function synchronizePlainText() {
+  function synchronizeTimings() {
+    lines = sourceLines.map(line => ({ ...line }));
+
     if (!Number.isFinite(audioDuration) || audioDuration <= 0) {
       return;
     }
 
-    if (!lines.length || !lines.every(line => line.time === null)) {
-      return;
+    if (lines.length && lines.every(line => line.time === null)) {
+      const interval = audioDuration / lines.length;
+      lines = lines.map((line, index) => ({
+        ...line,
+        time: index * interval
+      }));
     }
 
-    const interval = audioDuration / lines.length;
-    lines = lines.map((line, index) => ({
-      ...line,
-      time: index * interval
-    }));
-
     lineElements.forEach((element, index) => {
-      element.dataset.time = String(lines[index].time);
-      element.tabIndex = 0;
-      element.setAttribute('role', 'button');
-      element.setAttribute('aria-label', `Przewiń do: ${lines[index].text}`);
+      const line = lines[index];
+      if (Number.isFinite(line?.time)) {
+        element.dataset.time = String(line.time);
+        element.tabIndex = 0;
+        element.setAttribute('role', 'button');
+        element.setAttribute('aria-label', `Przewiń do: ${line.text}`);
+      } else {
+        delete element.dataset.time;
+        element.removeAttribute('role');
+        element.removeAttribute('aria-label');
+        element.removeAttribute('tabindex');
+      }
     });
   }
 
@@ -146,13 +155,14 @@ export function createLyrics(display, { onSeek } = {}) {
     });
   }
 
-  async function load(url, song) {
+  async function load(url, song, duration) {
     loadId += 1;
     const currentLoadId = loadId;
 
     lines = [];
+    sourceLines = [];
     lineElements = [];
-    audioDuration = null;
+    audioDuration = Number.isFinite(duration) && duration > 0 ? duration : null;
     activeTime = null;
     display.replaceChildren();
 
@@ -168,6 +178,9 @@ export function createLyrics(display, { onSeek } = {}) {
           title: song.title,
           artist: song.artist || ''
         });
+        if (Number.isFinite(audioDuration) && audioDuration > 0) {
+          params.set('duration', String(audioDuration));
+        }
         const response = await fetch(`api/lyrics.php?${params}`);
         if (!response.ok) throw new Error('Brak tekstu LRCLIB');
         const data = await response.json();
@@ -178,14 +191,14 @@ export function createLyrics(display, { onSeek } = {}) {
 
       if (currentLoadId !== loadId) return;
 
-      lines = parseLRC(content);
+      sourceLines = parseLRC(content);
+      synchronizeTimings();
 
       if (!lines.length) {
         display.textContent = 'Brak zsynchronizowanego tekstu.';
         return;
       }
 
-      synchronizePlainText();
       render();
     } catch {
       if (currentLoadId !== loadId) return;
@@ -197,7 +210,7 @@ export function createLyrics(display, { onSeek } = {}) {
     if (!Number.isFinite(duration) || duration <= 0) return;
 
     audioDuration = duration;
-    synchronizePlainText();
+    synchronizeTimings();
   }
 
   function update(currentTime) {

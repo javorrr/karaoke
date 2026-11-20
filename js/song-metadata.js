@@ -1,5 +1,5 @@
 const SONG_METADATA = {
-  'Last Christmas': { genre: 'Pop', language: 'Angielski', decade: '1980' },
+  'Last Christmas-Instrumental': { genre: 'Pop', language: 'Angielski', decade: '1980' },
   'W sumie nie jest źle': { genre: 'Pop', language: 'Polski', decade: '1970' }
 };
 

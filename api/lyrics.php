@@ -12,9 +12,25 @@ function lyricsError(string $message, int $status): never
 
 $title = trim((string) ($_GET['title'] ?? ''));
 $artist = trim((string) ($_GET['artist'] ?? ''));
+$durationInput = $_GET['duration'] ?? null;
+$requestedDuration = null;
+
+if ($durationInput !== null) {
+    if (!is_scalar($durationInput)) {
+        lyricsError('Nieprawidłowa długość piosenki.', 400);
+    }
+
+    $requestedDuration = filter_var($durationInput, FILTER_VALIDATE_FLOAT);
+}
 
 if ($title === '' || strlen($title) > 200 || strlen($artist) > 200) {
     lyricsError('Brak poprawnej nazwy piosenki.', 400);
+}
+
+if ($durationInput !== null
+    && ($requestedDuration === false || !is_finite($requestedDuration)
+        || $requestedDuration <= 0 || $requestedDuration > 86400)) {
+    lyricsError('Nieprawidłowa długość piosenki.', 400);
 }
 
 $search = $artist === '' ? $title : $title . ' ' . $artist;
@@ -75,17 +91,62 @@ $data = json_decode($response ?? '', true);
 $lyrics = '';
 
 if (is_array($data)) {
+    $bestMatch = null;
+    $bestTitleRank = PHP_INT_MAX;
+    $bestDistance = INF;
+    $normalizeTitle = static function (string $value): string {
+        $value = preg_replace('/^\s*\d+\s+/', '', strtolower($value)) ?? $value;
+        return preg_replace('/[^a-z0-9]+/', '', $value) ?? $value;
+    };
+    $requestedTitle = $normalizeTitle($title);
+    $normalizedArtist = $normalizeTitle($artist);
+
     foreach ($data as $result) {
         if (!is_array($result)) {
             continue;
         }
 
-        $candidate = trim((string) ($result['syncedLyrics'] ?? $result['plainLyrics'] ?? ''));
-        if ($candidate !== '') {
-            $lyrics = $candidate;
-            break;
+        $candidateTitle = $normalizeTitle((string) ($result['trackName'] ?? ''));
+        if ($normalizedArtist !== '' && str_starts_with($candidateTitle, $normalizedArtist)) {
+            $candidateTitle = substr($candidateTitle, strlen($normalizedArtist));
+        }
+        if ($normalizedArtist !== '' && str_ends_with($candidateTitle, $normalizedArtist)) {
+            $candidateTitle = substr($candidateTitle, 0, -strlen($normalizedArtist));
+        }
+
+        if ($candidateTitle === $requestedTitle) {
+            $titleRank = 0;
+        } elseif (str_starts_with($candidateTitle, $requestedTitle)) {
+            $titleRank = 1;
+        } elseif (str_contains($candidateTitle, $requestedTitle)) {
+            $titleRank = 2;
+        } else {
+            continue;
+        }
+
+        $candidate = trim((string) ($result['syncedLyrics'] ?? ''));
+        if ($candidate === '') {
+            continue;
+        }
+
+        $candidateDuration = filter_var($result['duration'] ?? null, FILTER_VALIDATE_FLOAT);
+        $candidateDuration = $candidateDuration !== false && $candidateDuration > 0
+            ? $candidateDuration
+            : null;
+        $distance = $requestedDuration !== null && $candidateDuration !== null
+            ? abs($requestedDuration - $candidateDuration)
+            : INF;
+
+        if ($bestMatch === null
+            || $titleRank < $bestTitleRank
+            || ($titleRank === $bestTitleRank && $distance < $bestDistance)) {
+            $bestMatch = $candidate;
+            $bestTitleRank = $titleRank;
+            $bestDistance = $distance;
         }
     }
+
+    $lyrics = $bestMatch ?? '';
 }
 
 if (json_last_error() !== JSON_ERROR_NONE) {

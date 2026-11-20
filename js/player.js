@@ -36,6 +36,7 @@ export function createPlayer(elements) {
   let activeSong = null;
   let isScrubbing = false;
   let lyricsLoadId = 0;
+  let lyricsLoadRequested = false;
 
   const storedVolumeValue = readStoredValue(STORAGE_KEYS.volume);
   const storedVolume = storedVolumeValue === null ? Number.NaN : Number(storedVolumeValue);
@@ -129,6 +130,22 @@ export function createPlayer(elements) {
     lyrics.setDuration(audio.duration);
   };
 
+  const loadLyrics = (duration = getDuration()) => {
+    if (!activeSong || lyricsLoadRequested) return;
+    if (!activeSong.lrc_url
+      && (audio.readyState < 1 || !Number.isFinite(duration) || duration <= 0)) return;
+
+    lyricsLoadRequested = true;
+    const song = activeSong;
+    const currentLyricsLoadId = lyricsLoadId;
+
+    lyrics.load(song.lrc_url, song, duration).then(() => {
+      if (currentLyricsLoadId !== lyricsLoadId) return;
+      lyrics.setDuration(getDuration());
+      lyrics.update(0);
+    });
+  };
+
   const seekTo = (time) => {
     const duration = getDuration();
     const target = duration > 0 ? clamp(time, 0, duration) : Math.max(0, time);
@@ -172,8 +189,14 @@ export function createPlayer(elements) {
   audio.playbackRate = initialSpeed;
   updateMuteUi();
 
-  audio.addEventListener('loadedmetadata', applyDuration);
-  audio.addEventListener('durationchange', applyDuration);
+  audio.addEventListener('loadedmetadata', () => {
+    applyDuration();
+    loadLyrics();
+  });
+  audio.addEventListener('durationchange', () => {
+    applyDuration();
+    loadLyrics();
+  });
 
   audio.addEventListener('timeupdate', () => {
     if (isScrubbing) return;
@@ -301,7 +324,7 @@ export function createPlayer(elements) {
     load(song) {
       activeSong = song;
       lyricsLoadId += 1;
-      const currentLyricsLoadId = lyricsLoadId;
+      lyricsLoadRequested = false;
 
       elements.playerTitle.textContent = song.title;
       elements.playerArtist.textContent = song.artist;
@@ -318,12 +341,7 @@ export function createPlayer(elements) {
       audio.src = song.stream_url || song.audio_url;
       audio.load();
       audio.playbackRate = Number(elements.speedSelect.value) || 1;
-
-      lyrics.load(song.lrc_url, song).then(() => {
-        if (currentLyricsLoadId !== lyricsLoadId) return;
-        lyrics.setDuration(getDuration());
-        lyrics.update(0);
-      });
+      loadLyrics();
     },
     stop() {
       audio.pause();

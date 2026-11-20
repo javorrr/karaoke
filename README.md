@@ -72,6 +72,10 @@ regulację głośności, tempo odtwarzania (0,5×–1,5×) oraz przewijanie o 10
 w obie strony. Ustawienia głośności, wyciszenia, tempa i śledzenia tekstu są
 zapamiętywane w przeglądarce.
 
+Teksty pobierane z LRCLIB są dobierane do długości pliku audio. Ich znaczniki
+czasu pozostają zgodne z oryginalną synchronizacją, także gdy utwór ma dłuższe
+instrumentalne zakończenie.
+
 Pliki audio są serwowane przez `api/audio.php`, ponieważ wbudowany serwer PHP
 nie obsługuje zapytań częściowych (HTTP Range). Dzięki temu przewijanie działa
 również po uruchomieniu projektu przez `php -S`.
